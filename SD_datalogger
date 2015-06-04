@@ -1,0 +1,102 @@
+/*
+  Arduino SD card logger
+
+ Developed for the Stanford Student Space Initiative. Starter template for Datalogging projects
+ using an Arduino UNO and Adafruit SD data logger shield.
+
+ Hardware:
+ * Adafruit Ultimate GPS + Logging Shield
+
+ SD card attached to SPI bus as follows:
+ * UNO:  MOSI - pin 11, MISO - pin 12, CLK - pin 13, CS - pin 4 (CS pin can be changed)
+
+ created  3 Jun 2015 by Cameron Ramos
+ modified 3 Jun 2015 by Cameron Ramos
+
+ */
+
+#include <SoftwareSerial.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <SPI.h>
+#include <SD.h>
+
+#define chipSelect 10
+#define ledPin 13
+#define aref_voltage 3.3
+
+int looping = 0; //variable to allow standard deviation to be produced every 5 seconds
+
+File dataFile;
+
+//------------------------------error-----------------------------------//
+void error(char *str)
+{
+  Serial.print("error: ");
+  Serial.println(str);
+  while(1);
+}
+
+//------------------------------initSDcard------------------------------//
+void initSDCard(){
+  // initialize the SD card
+  Serial.print("Initializing SD card...");
+
+  pinMode(SS, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(pinPay, INPUT);
+
+  // see if the card is present and can be initialized:
+  if (!SD.begin(chipSelect))) { //Replace with  if (!SD.begin(chipSelect, 11, 12, 13)) { for Mega/Leonardo
+    error("Card failed, or not present");
+  }
+  Serial.println("card initialized.");
+
+}
+
+
+//------------------------------SETUP------------------------------//
+void setup(void)
+{
+  Serial.begin(115200);
+  Serial.println(F("Data Logger"));
+  Serial.println("");
+  Wire.begin();
+
+  /*INITIALIZE ANY SETUP FUNCTIONS HERE */
+
+  /* Initialize the SD card*/
+  initSDCard();
+
+  /* Open log file*/
+  dataFile = SD.open("datalog.txt", FILE_WRITE);
+  if (! dataFile) {
+    Serial.println("error opening datalog.txt");
+    while (1); // Wait forever since we cant write data
+  }
+  RTC.begin();
+  dataFile.println("-------------Starting New Session-------------");
+  printTime(dataFile); //indicate start of new session
+
+  analogReference(EXTERNAL);
+
+}
+
+//------------------------------LOOP------------------------------//
+//Constantly check the roll/pitch/heading/altitude/temperature. Print to Serial and dataFile.
+
+void loop()
+{
+  /* INSERT DATALOGGING FUNCTION CALLS HERE */
+
+  looping += 1;
+  if(looping > 4){
+    looping = 0;
+  }
+
+  dataFile.println();
+  dataFile.flush();
+
+  delay(1000);
+
+}
