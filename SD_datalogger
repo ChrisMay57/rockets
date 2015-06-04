@@ -44,10 +44,9 @@ void initSDCard(){
 
   pinMode(SS, OUTPUT);
   pinMode(10, OUTPUT);
-  pinMode(pinPay, INPUT);
 
   // see if the card is present and can be initialized:
-  if (!SD.begin(chipSelect))) { //Replace with  if (!SD.begin(chipSelect, 11, 12, 13)) { for Mega/Leonardo
+  if (!SD.begin(chipSelect)) { //Replace with  if (!SD.begin(chipSelect, 11, 12, 13)) { for Mega/Leonardo
     error("Card failed, or not present");
   }
   Serial.println("card initialized.");
@@ -74,9 +73,7 @@ void setup(void)
     Serial.println("error opening datalog.txt");
     while (1); // Wait forever since we cant write data
   }
-  RTC.begin();
   dataFile.println("-------------Starting New Session-------------");
-  printTime(dataFile); //indicate start of new session
 
   analogReference(EXTERNAL);
 
