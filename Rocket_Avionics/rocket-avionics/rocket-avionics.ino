@@ -34,25 +34,47 @@ int state = 0;
 void setup() {
   pinMode(13, OUTPUT);
   Serial.begin(9600); // start serial for output
-  // initialize i2c as slave
+  // Init i2c given address
   Wire.begin(SLAVE_ADDRESS);
 
-  // define callbacks for i2c communication
   Wire.onReceive(receiveData);
   Wire.onRequest(sendData);
 
   Serial.println("Ready!");
 }
-  
-void loop() {
-  delay(100); // Andrew: the sensors should be updated here into global variables. 
-  // When the PI triggers the i2c 'receive' or 'send' data interrupts, the Arduino 
-  // sends a message. 
+
+int sensorData[10]; 
+
+/*
+ * Collect the latest sensor data. 
+ */
+void collectData(){
+  for(int ii = 0; ii < sizeof(sensorData); ii ++){
+    sensorData[ii] = random(-ii, ii); 
+  }
+  return; 
 }
 
-// callback for received data
-void receiveData(int byteCount) {
+// Used for keeping time
+int tickRate = 100; 
+float logTime = 0; 
 
+/*
+ * Gather data every tick. Do not delay - this scan screw up interrupts. 
+ * Use smart timing instead. 
+ */
+void loop() {
+  // this will run 10 times every second
+  if (millis() - logTime > tickRate) {
+    logTime = int(millis() / tickRate) * tickRate; 
+    collectData(); // collect new data from sensors 
+  }
+}
+
+/*
+ * Read data from Pi 
+ */
+void receiveData(int byteCount) {
   while (Wire.available()) {
     number = Wire.read();
     Serial.print("data received: ");
@@ -72,7 +94,13 @@ void receiveData(int byteCount) {
   }
 }
 
-// callback for sending data
+/*
+ * Send data to Pi. 
+ */
 void sendData() {
-  Wire.write(number);
+  String b = ""; 
+  for(int ii = 0; ii < sizeof(sensorData); ii ++){
+    b += String(sensorData[ii]);  
+  } 
+  Wire.write(b.c_str()); // converts to char array and sends. needs to be tested. 
 }
