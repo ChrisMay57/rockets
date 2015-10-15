@@ -5,7 +5,7 @@ filename = "log.txt"
 logData = True 
 
 """
-	Manages i2c communication with arduino.  
+	Manages i2c communication with arduinos.  
 """
 class I2C: 
 	def __init__(self, addresses):
@@ -28,11 +28,35 @@ class I2C:
 		return data # this is indexed by the Arduino 
 
 """
-	Finds all connected arduinos
+1 byte read write from: http://blog.oscarliang.net/raspberry-pi-arduino-connected-i2c/
+"""
+def writeNumber(bus, address, value):
+	bus.write_byte(address, value)
+	# bus.write_byte_data(address, 0, value)
+	return -1
+def readNumber(bus, address):
+	number = bus.read_byte(address)
+	# number = bus.read_byte_data(address, 1)
+	return numbe
+
+"""
+	Finds all connected i2c addresses
 """	
 def scan_i2c():
-	arduinos = [] 
-	return arduinos 
+	connected_i2c = [] 
+	cur_address = 0
+	test_bus = smbus.SMBus(1)
+	for jj in xrange(cur_address, 120): 
+		writeNumber(test_bus, address, 1)
+		time.sleep(1)
+		return_data = readNumber(test_bus, address)
+		# wait one second for response 
+		print "returned:"
+		print return_data
+		if(return_data == "1"): # test what this should be 
+			connected_i2c.append(address)
+
+	return connected_i2c 
 
 """
 	Write data to file (not to i2c). 
@@ -43,12 +67,14 @@ def writeData(log, data):
 		log.write(ii + ": " + data[ii])
 	log.write("\n")
 
+pingRate = 50 
+
 if __name__ == "__main__":
 	arduinos = scan_i2c() 
 	pi2c = I2C(arduinos)
 
-	with open(filename, "a") as log:
-    	while logData:
-			currentData = pi2c.gatherData()
-			writeData(log, currentData)
-			time.sleep(50 / 1000) # 50 milliseconds
+	# with open(filename, "a") as log:
+ #    	while logData:
+	# 		currentData = pi2c.gatherData()
+	# 		writeData(log, currentData)
+	# 		time.sleep(pingRate / 1000) # 50 milliseconds
