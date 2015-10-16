@@ -32,7 +32,6 @@ class I2C:
 1 byte read write from: http://blog.oscarliang.net/raspberry-pi-arduino-connected-i2c/
 """
 def testAddress(address):
-	print address
 	try: 
 		writeNumber(1, address) 
 	except: 
