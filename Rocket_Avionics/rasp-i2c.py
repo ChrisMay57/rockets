@@ -55,7 +55,10 @@ def scan_i2c():
 			continue 
 
 		time.sleep(1) # wait one second for response 
-		return_data = readNumber(jj)
+		try: 
+			return_data = readNumber(jj)
+		except: 
+			print 'reading fail'
 		print "returned:"
 		print return_data
 
