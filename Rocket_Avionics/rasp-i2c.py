@@ -52,12 +52,13 @@ def scan_i2c():
 		try: 
 			writeNumber(test_bus, int(jj), 1)
 			print 'sent 1'
-			time.sleep(1) # wait one second for response 
-			return_data = readNumber(test_bus, jj)
-			print "returned:"
-			print return_data
 		except: 
 			continue 
+
+		time.sleep(1) # wait one second for response 
+		return_data = readNumber(test_bus, jj)
+		print "returned:"
+		print return_data
 
 		if(return_data == "1"): # test what this should be 
 			connected_i2c.append(jj)
