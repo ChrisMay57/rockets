@@ -34,7 +34,6 @@ class I2C:
 def testAddress(address):
 	print address
 	writeNumber(1, address) 
-	print 'written'
 	time.sleep(1)
 	number = readNumber(address)
 	print 'Arduino: Hey RPI, I received a digit', number
@@ -44,12 +43,12 @@ def testAddress(address):
 
 
 def writeNumber(value, address):
-	mybus.write_byte(0x04, value)
+	mybus.write_byte(address, value)
 	# bus.write_byte_data(address, 0, value)
 	return -1
 
 def readNumber(address):
-	number = mybus.read_byte(0x04)
+	number = mybus.read_byte(address)
 	# number = bus.read_byte_data(address, 1)
 	return number
 
@@ -59,7 +58,7 @@ def readNumber(address):
 def scan_i2c():
 	connected_i2c = [] 
 	cur_address = 0
-	for jj in xrange(4, 5): 
+	for jj in xrange(0, 120): 
 		if(testAddress(jj)): 
 			connected_i2c.append(jj)
 

@@ -72,6 +72,7 @@ void loop() {
       collectData(); // collect new data from sensors
     }
   }
+  delay(100); // temporary
 }
 
 /*
@@ -84,8 +85,8 @@ void receiveData(int byteCount) {
     Serial.println(number);
 
     if (number == 1) {
-      sendOne();
-      loggerOn = true; 
+      // sendOne();
+      // loggerOn = true; 
       Serial.println("I HAVE BEEN ACTIVATED"); 
     }
     else {
