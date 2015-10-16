@@ -57,10 +57,10 @@ def scan_i2c():
 		time.sleep(1) # wait one second for response 
 		try: 
 			return_data = readNumber(jj)
+			print "returned:"
+			print return_data
 		except: 
-			print 'reading fail'
-		print "returned:"
-		print return_data
+			print 'reading fail on %i' % jj
 
 		if(return_data == "1"): # test what this should be 
 			connected_i2c.append(jj)
