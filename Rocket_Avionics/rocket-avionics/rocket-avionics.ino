@@ -27,7 +27,7 @@
  * * add tutorial credit link!!!
  */
 
-#define SLAVE_ADDRESS 0x04
+#define SLAVE_ADDRESS 0x00
 int number = 0;
 int state = 0;
 

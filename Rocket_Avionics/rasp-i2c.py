@@ -47,11 +47,8 @@ def scan_i2c():
 	connected_i2c = [] 
 	cur_address = 0
 	for jj in xrange(cur_address, 120): 
-		try: 
-			if(testAddress(jj)): 
-				connected_i2c.append(jj)
-		except Exception,e: 
-			print str(e)
+		if(testAddress(jj)): 
+			connected_i2c.append(jj)
 
 	print "connected i2c:"
 	print connected_i2c
