@@ -31,15 +31,12 @@ class I2C:
 """
 1 byte read write from: http://blog.oscarliang.net/raspberry-pi-arduino-connected-i2c/
 """
-def writeNumber(address, value):
+def testAddress(address):
 	mybus.write_byte(address, value)
-	print 'hi3'
-	# bus.write_byte_data(address, 0, value)
-	return 
-def readNumber(address):
-	number = mybus.read_byte(address)
-	# number = bus.read_byte_data(address, 1)
-	return number
+	time.sleep(1)
+	number = readNumber(address)
+	return number 
+
 
 """
 	Finds all connected i2c addresses
@@ -49,22 +46,10 @@ def scan_i2c():
 	cur_address = 0
 	for jj in xrange(cur_address, 120): 
 		try: 
-			writeNumber(int(jj), 1)
-			print 'sent 1'
-		except: 
-			continue 
-
-		time.sleep(1) # wait one second for response 
-		try: 
-			print 'reading'
-			return_data = readNumber(jj)
-			print "returned:"
-			print return_data
-
-			if(return_data == "1"): # test what this should be 
+			if(testAddress(jj))
 				connected_i2c.append(jj)
-		except: 
-			print 'reading fail on %i' % jj
+		except Exception,e: 
+			print str(e)
 
 	print "connected i2c:"
 	print connected_i2c
