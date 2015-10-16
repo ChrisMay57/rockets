@@ -51,7 +51,7 @@ def testAddress(address):
 def scan_i2c():
 	connected_i2c = [] 
 	cur_address = 0
-	for jj in xrange(4, 4): 
+	for jj in xrange(4, 5): 
 		if(testAddress(jj)): 
 			connected_i2c.append(jj)
 
