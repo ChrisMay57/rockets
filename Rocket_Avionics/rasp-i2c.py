@@ -31,7 +31,8 @@ class I2C:
 1 byte read write from: http://blog.oscarliang.net/raspberry-pi-arduino-connected-i2c/
 """
 def writeNumber(bus, address, value):
-	bus.write_byte(address, value)
+	mybus = smbus.SMBus(1)
+	mybus.write_byte(address, value)
 	# bus.write_byte_data(address, 0, value)
 	return 
 def readNumber(bus, address):
@@ -48,6 +49,7 @@ def scan_i2c():
 	test_bus = smbus.SMBus(1)
 	for jj in xrange(cur_address, 120): 
 		try: 
+			print 'sending'
 			writeNumber(test_bus, int(jj), 1)
 			print 'sent 1'
 			time.sleep(1) # wait one second for response 
