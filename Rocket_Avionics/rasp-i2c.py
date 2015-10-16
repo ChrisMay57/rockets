@@ -36,7 +36,7 @@ def testAddress(address):
 	writeNumber(1) 
 	time.sleep(1)
 	number = readNumber()
-	print “Arduino: Hey RPI, I received a digit “, number
+	print 'Arduino: Hey RPI, I received a digit', number
 	if number == 1: 
 		return True 
 	return False 
