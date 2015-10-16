@@ -47,16 +47,14 @@ def scan_i2c():
 	cur_address = 0
 	test_bus = smbus.SMBus(1)
 	for jj in xrange(cur_address, 120): 
-		print jj
 		try: 
 			writeNumber(test_bus, int(jj), 1)
 			# time.sleep(1) # wait one second for response 
 			return_data = readNumber(test_bus, jj)
+			print "returned:"
+			print return_data
 		except: 
 			continue 
-		
-		print "returned:"
-		print return_data
 
 		if(return_data == "1"): # test what this should be 
 			connected_i2c.append(jj)
