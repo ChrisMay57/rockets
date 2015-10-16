@@ -35,7 +35,9 @@ def testAddress(address):
 	mybus.write_byte(address, value)
 	time.sleep(1)
 	number = readNumber(address)
-	return number 
+	if number == 1: 
+		return true 
+	return false 
 
 
 """
@@ -46,7 +48,7 @@ def scan_i2c():
 	cur_address = 0
 	for jj in xrange(cur_address, 120): 
 		try: 
-			if(testAddress(jj))
+			if(testAddress(jj)): 
 				connected_i2c.append(jj)
 		except Exception,e: 
 			print str(e)
