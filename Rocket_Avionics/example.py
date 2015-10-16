@@ -19,7 +19,7 @@ def readNumber():
 while True:
 	var = input('Enter 1 – 9: ')
 	if not var:
-	continue
+		continue
 	
 	writeNumber(var)
 	print 'RPI: Hi Arduino, I sent you ', var
