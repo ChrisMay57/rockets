@@ -32,7 +32,9 @@ class I2C:
 """
 def writeNumber(bus, address, value):
 	mybus = smbus.SMBus(1)
+	print 'hi2'
 	mybus.write_byte(address, value)
+	print 'hi3'
 	# bus.write_byte_data(address, 0, value)
 	return 
 def readNumber(bus, address):
@@ -49,7 +51,6 @@ def scan_i2c():
 	test_bus = smbus.SMBus(1)
 	for jj in xrange(cur_address, 120): 
 		try: 
-			print 'sending'
 			writeNumber(test_bus, int(jj), 1)
 			print 'sent 1'
 			time.sleep(1) # wait one second for response 
