@@ -38,10 +38,10 @@ def testAddress(address):
 		time.sleep(1)
 		number = mybus.read_byte_data(address)
 		if number == 1: 
-			return true 
-		return false 
+			return True 
+		return False 
 	except: 
-		return false
+		return False
 
 
 """
