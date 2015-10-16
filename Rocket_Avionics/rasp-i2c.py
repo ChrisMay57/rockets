@@ -37,7 +37,7 @@ def writeNumber(bus, address, value):
 def readNumber(bus, address):
 	number = bus.read_byte(address)
 	# number = bus.read_byte_data(address, 1)
-	return numbe
+	return number
 
 """
 	Finds all connected i2c addresses
@@ -47,7 +47,7 @@ def scan_i2c():
 	cur_address = 0
 	test_bus = smbus.SMBus(1)
 	for jj in xrange(cur_address, 120): 
-		writeNumber(test_bus, int(jj, 16), 1)
+		writeNumber(test_bus, int(jj), 1)
 		time.sleep(1) # wait one second for response 
 		return_data = readNumber(test_bus, jj)
 		
