@@ -33,17 +33,24 @@ class I2C:
 """
 def testAddress(address):
 	print address
-	try: 
-		mybus.write_byte(address, 1)
-		time.sleep(1)
-		number = mybus.read_byte_data(address)
-		print "number: %d" % (number)
-		if number == 1: 
-			return True 
-		return False 
-	except: 
-		return False
+	writeNumber(1) 
+	time.sleep(1)
+	number = readNumber()
+	print “Arduino: Hey RPI, I received a digit “, number
+	if number == 1: 
+		return True 
+	return False 
 
+
+def writeNumber(value, address):
+	mybus.write_byte(address, value)
+	# bus.write_byte_data(address, 0, value)
+	return -1
+
+def readNumber(address):
+	number = mybus.read_byte(address)
+	# number = bus.read_byte_data(address, 1)
+	return number
 
 """
 	Finds all connected i2c addresses
