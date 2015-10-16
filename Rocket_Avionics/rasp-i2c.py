@@ -47,9 +47,12 @@ def scan_i2c():
 	cur_address = 0
 	test_bus = smbus.SMBus(1)
 	for jj in xrange(cur_address, 120): 
-		writeNumber(test_bus, int(jj), 1)
-		time.sleep(1) # wait one second for response 
-		return_data = readNumber(test_bus, jj)
+		try: 
+			writeNumber(test_bus, int(jj), 1)
+			time.sleep(1) # wait one second for response 
+			return_data = readNumber(test_bus, jj)
+		except: 
+			continue 
 		
 		print "returned:"
 		print return_data
