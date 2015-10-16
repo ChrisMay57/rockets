@@ -33,12 +33,15 @@ class I2C:
 """
 def testAddress(address):
 	print address
-	mybus.write_byte(address, 1)
-	time.sleep(1)
-	number = mybus.read_byte_data(address)
-	if number == 1: 
-		return true 
-	return false 
+	try: 
+		mybus.write_byte(address, 1)
+		time.sleep(1)
+		number = mybus.read_byte_data(address)
+		if number == 1: 
+			return true 
+		return false 
+	except: 
+		return false
 
 
 """
