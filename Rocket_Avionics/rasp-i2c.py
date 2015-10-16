@@ -34,7 +34,7 @@ class I2C:
 def testAddress(address):
 	mybus.write_byte(address, 1)
 	time.sleep(1)
-	number = readNumber(address)
+	number = bus.read_byte(address)
 	if number == 1: 
 		return true 
 	return false 
