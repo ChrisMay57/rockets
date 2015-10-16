@@ -105,9 +105,10 @@ void sendOne() {
  * Send data to Raspberry Pi.
  */
 void sendData() {
-  String b = "";
-  for (int ii = 0; ii < sizeof(sensorData); ii ++) {
-    b += String(sensorData[ii]);
-  }
-  Wire.write(b.c_str()); // converts to char array and sends. needs to be tested.
+  //  String b = "";
+  //  for (int ii = 0; ii < sizeof(sensorData); ii ++) {
+  //    b += String(sensorData[ii]);
+  //  }
+  //  Wire.write(b.c_str()); // converts to char array and sends. needs to be tested.
+  Wire.write(1); 
 }
