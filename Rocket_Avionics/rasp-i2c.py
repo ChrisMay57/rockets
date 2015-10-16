@@ -4,21 +4,22 @@ import time
 filename = "log.txt"
 logData = True 
 
+mybus = smbus.SMBus(1)
+
 """
 	Manages i2c communication with arduinos.  
 """
 class I2C: 
 	def __init__(self, addresses):
 		self.addresses = addresses # sets Pi's arduino addresses to result of search 
-		self.bus = smbus.SMBus(1)
 		return 
 
 	def writeData(self, value, address):
-		self.bus.write_byte(address, value)
+		mybus.write_byte(address, value)
 		return -1
 	
 	def readData(self, address):
-		number = self.bus.read_byte(address)
+		number = mybus.ead_byte(address)
 		return number
 
 	def gatherData(self): 
@@ -30,14 +31,13 @@ class I2C:
 """
 1 byte read write from: http://blog.oscarliang.net/raspberry-pi-arduino-connected-i2c/
 """
-def writeNumber(bus, address, value):
-	mybus = smbus.SMBus(1)
+def writeNumber(address, value):
 	mybus.write_byte(address, value)
 	print 'hi3'
 	# bus.write_byte_data(address, 0, value)
 	return 
-def readNumber(bus, address):
-	number = bus.read_byte(address)
+def readNumber(address):
+	number = mybus.read_byte(address)
 	# number = bus.read_byte_data(address, 1)
 	return number
 
@@ -47,16 +47,15 @@ def readNumber(bus, address):
 def scan_i2c():
 	connected_i2c = [] 
 	cur_address = 0
-	test_bus = smbus.SMBus(1)
 	for jj in xrange(cur_address, 120): 
 		try: 
-			writeNumber(test_bus, int(jj), 1)
+			writeNumber(int(jj), 1)
 			print 'sent 1'
 		except: 
 			continue 
 
 		time.sleep(1) # wait one second for response 
-		return_data = readNumber(test_bus, jj)
+		return_data = readNumber(jj)
 		print "returned:"
 		print return_data
 
