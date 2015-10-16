@@ -33,9 +33,9 @@ class I2C:
 """
 def testAddress(address):
 	print address
-	writeNumber(1) 
+	writeNumber(1, address) 
 	time.sleep(1)
-	number = readNumber()
+	number = readNumber(address)
 	print 'Arduino: Hey RPI, I received a digit', number
 	if number == 1: 
 		return True 
