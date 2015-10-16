@@ -32,6 +32,7 @@ class I2C:
 1 byte read write from: http://blog.oscarliang.net/raspberry-pi-arduino-connected-i2c/
 """
 def testAddress(address):
+	print address
 	mybus.write_byte(address, 1)
 	time.sleep(1)
 	number = mybus.read_byte_data(address)
