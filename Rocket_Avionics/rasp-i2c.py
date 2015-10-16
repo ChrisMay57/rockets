@@ -33,7 +33,7 @@ class I2C:
 def writeNumber(bus, address, value):
 	bus.write_byte(address, value)
 	# bus.write_byte_data(address, 0, value)
-	return -1
+	return 
 def readNumber(bus, address):
 	number = bus.read_byte(address)
 	# number = bus.read_byte_data(address, 1)
