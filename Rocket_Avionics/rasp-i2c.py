@@ -49,7 +49,8 @@ def scan_i2c():
 	for jj in xrange(cur_address, 120): 
 		try: 
 			writeNumber(test_bus, int(jj), 1)
-			# time.sleep(1) # wait one second for response 
+			print 'sent 1'
+			time.sleep(1) # wait one second for response 
 			return_data = readNumber(test_bus, jj)
 			print "returned:"
 			print return_data
