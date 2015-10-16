@@ -43,12 +43,12 @@ def testAddress(address):
 
 
 def writeNumber(value, address):
-	mybus.write_byte(address, value)
+	mybus.write_byte(0x04, value)
 	# bus.write_byte_data(address, 0, value)
 	return -1
 
 def readNumber(address):
-	number = mybus.read_byte(address)
+	number = mybus.read_byte(0x04)
 	# number = bus.read_byte_data(address, 1)
 	return number
 
