@@ -90,11 +90,11 @@ pingRate = 50
 
 if __name__ == "__main__":
 	arduinos = scan_i2c() 
-	pi2c = I2C(arduinos)
-	print pi2c
+	# pi2c = I2C(arduinos)
+	# print pi2c
 
 	while(True):
-		for item in pi2c: 
+		for item in arduinos: 
 			print 'reading to to %s' % (item)
 			dataBack = readPacket()
 			time.sleep(1/1000)
