@@ -106,8 +106,12 @@ void sendData() {
   //  }
   //  Wire.write(b.c_str()); // converts to char array and sends. needs to be tested.
   if (loggerOn) {
-    byte test[] = {1, 2, 3, 4};
-    Wire.write(2);
+    Wire.write(data[0]);
+    delay(10); 
+    for(int ii = 0; ii < 5; ii ++){
+      Wire.write(data[ii]); 
+      delay(10); 
+    }
     digitalWrite(13, HIGH);
   }
   else {
