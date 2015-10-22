@@ -63,7 +63,6 @@ float logTime = 0;
  * Gather data every tick. Do not delay - this scan screw up interrupts.
  * Use smart timing instead.
  */
-int data[5] = {4, 2, 3, 4, 5};
 
 boolean loggerOn = false;
 void loop() {
@@ -99,6 +98,10 @@ void sendOne() {
 /*
  * Send data to Raspberry Pi.
  */
+
+int data[] = {10, 200, 24, 123, 125, 11, 99, 34, 76, 99, 10}; 
+int index = 0; 
+ 
 void sendData() {
   //  String b = "";
   //  for (int ii = 0; ii < sizeof(sensorData); ii ++) {
@@ -106,13 +109,11 @@ void sendData() {
   //  }
   //  Wire.write(b.c_str()); // converts to char array and sends. needs to be tested.
   if (loggerOn) {
-    Wire.write(data[0]);
-    delay(10); 
-    for(int ii = 0; ii < 5; ii ++){
-      Wire.write(data[ii]); 
-      delay(10); 
+    Wire.write(data[index]); 
+    index ++;  
+    if(index >= sizeof(data)/sizeof(int)){
+      index = 0; 
     }
-    digitalWrite(13, HIGH);
   }
   else {
     Wire.write(1);

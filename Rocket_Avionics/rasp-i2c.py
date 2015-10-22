@@ -74,8 +74,12 @@ def readPacket(address):
     length = int(mybus.read_byte(address));
     print 'length of data: ' + str(length)
     for ii in xrange(length):
-        data += str(mybus.read_byte(address))+ ' / ';
+    	try: 
+        	data += str(mybus.read_byte(address))+ ' / ';
+       	except: 
+       		return data 
     print data
+    return data 
 
 """
 	Write data to file (not to i2c). 
