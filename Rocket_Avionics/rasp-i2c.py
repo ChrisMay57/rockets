@@ -71,10 +71,10 @@ def scan_i2c():
 
 def readPacket(address):
     data = ''
-    length = int(mybus.read_byte(address));
+    length = int(mybus.read_byte_data(address));
     print 'length of data: ' + str(length)
-    for i in range (0,length):
-        data += str(mybus.read_byte(address))+ ' / ';
+    for ii in xrange length:
+        data += str(mybus.read_byte_data(address))+ ' / ';
     print data
 
 """
@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
 	while(True):
 		for item in arduinos: 
-			print 'reading to to %s' % (item)
+			print 'reading to %s' % (item)
 			dataBack = readPacket(item)
 			time.sleep(1/1000)
 		time.sleep(pingRate/1000)
