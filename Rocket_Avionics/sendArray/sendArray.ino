@@ -55,5 +55,13 @@ void receiveData(int byteCount) {
       state = 1;
     }
   }
+<<<<<<< HEAD
 }
 
+=======
+ }
+
+
+ //test
+
+>>>>>>> origin/master
