@@ -63,13 +63,19 @@ float logTime = 0;
  * Gather data every tick. Do not delay - this scan screw up interrupts.
  * Use smart timing instead.
  */
-boolean loggerOn = false; 
+int data[5] = {1, 2, 3, 4, 5};
+
+boolean loggerOn = false;
 void loop() {
   if (loggerOn) {
     // this will run 10 times every second
-    if (millis() - logTime > tickRate) {
-      logTime = int(millis() / tickRate) * tickRate;
-      collectData(); // collect new data from sensors
+    //    if (millis() - logTime > tickRate) {
+    //      logTime = int(millis() / tickRate) * tickRate;
+    //      collectData(); // collect new data from sensors
+    //    }
+    for(int ii = 0; ii < 5; ii ++){
+      Wire.write(data[ii]);
+      delay(1); 
     }
   }
   delay(100); // temporary
@@ -86,8 +92,8 @@ void receiveData(int byteCount) {
 
     if (number == 1) {
       // sendOne();
-      // loggerOn = true; 
-      Serial.println("I HAVE BEEN ACTIVATED"); 
+      loggerOn = true;
+      Serial.println("I HAVE BEEN ACTIVATED");
     }
     else {
       // figure out what we want to do here
@@ -111,5 +117,5 @@ void sendData() {
   //    b += String(sensorData[ii]);
   //  }
   //  Wire.write(b.c_str()); // converts to char array and sends. needs to be tested.
-  Wire.write(1); 
+  Wire.write(1);
 }

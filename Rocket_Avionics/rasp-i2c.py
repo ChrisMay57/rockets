@@ -69,6 +69,14 @@ def scan_i2c():
 
 	return connected_i2c 
 
+def readPacket():
+    data = ''
+    length = int(bus.read_byte(address));
+    print 'length of data: ' + str(length)
+    for i in range (0,length):
+        data += str(bus.read_byte(address))+ ' / ';
+    print data
+
 """
 	Write data to file (not to i2c). 
 """
@@ -83,9 +91,19 @@ pingRate = 50
 if __name__ == "__main__":
 	arduinos = scan_i2c() 
 	pi2c = I2C(arduinos)
+	print pi2c
+
+	while(True):
+		for item in pi2c: 
+			print 'reading to to %s' % (item)
+			dataBack = readPacket()
+			time.sleep(1/1000)
+		time.sleep(pingRate/1000)
+
 
 	# with open(filename, "a") as log:
- #    	while logData:
-	# 		currentData = pi2c.gatherData()
-	# 		writeData(log, currentData)
+	# 	while logData:
+	# 		for item in pi2c: 
+	# 			currentData = pi2c.gatherData()
+	# 			writeData(log, currentData)
 	# 		time.sleep(pingRate / 1000) # 50 milliseconds
