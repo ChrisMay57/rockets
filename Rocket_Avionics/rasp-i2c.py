@@ -38,17 +38,22 @@ def testAddress(address):
 		return False 
 	time.sleep(1)
 	number = readNumber(address)
-	# print 'Arduino: Hey RPI, I received a digit', number
+
 	if number == 1: 
 		return True 
 	return False 
 
-
+"""
+	Write a specific number to an address
+"""
 def writeNumber(value, address):
 	mybus.write_byte(address, value)
 	# bus.write_byte_data(address, 0, value)
 	return -1
 
+"""
+	Read a byte (number) from an address 
+"""
 def readNumber(address):
 	number = mybus.read_byte(address)
 	# number = bus.read_byte_data(address, 1)
@@ -90,6 +95,7 @@ def writeData(log, data):
 		log.write(ii + ": " + data[ii])
 	log.write("\n")
 
+# ping rate for data
 pingRate = 50 
 
 if __name__ == "__main__":
@@ -97,11 +103,16 @@ if __name__ == "__main__":
 	# pi2c = I2C(arduinos)
 	# print pi2c
 
+	# loop infinitely to get data
 	while(True):
+		# loop through each arduino
 		for item in arduinos: 
+			# which arduino are we looking for 
 			print 'reading to %s' % (item)
 			dataBack = readPacket(item)
+			# sleep a bit 
 			time.sleep(1/1000)
+		# sleep a bit
 		time.sleep(pingRate/1000)
 
 

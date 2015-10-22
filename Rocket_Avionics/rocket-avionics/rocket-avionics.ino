@@ -99,23 +99,27 @@ void sendOne() {
  * Send data to Raspberry Pi.
  */
 
+// sample data
 int data[] = {10, 200, 24, 123, 125, 11, 99, 34, 76, 99, 10}; 
 int index = 0; 
- 
+
+/*
+ * Send data to pi. 
+ * Either sends a '1' to activate or actual data. 
+ * 
+ * TODO: a reset byte for index (can be upset with small errors now). 
+ */
 void sendData() {
-  //  String b = "";
-  //  for (int ii = 0; ii < sizeof(sensorData); ii ++) {
-  //    b += String(sensorData[ii]);
-  //  }
-  //  Wire.write(b.c_str()); // converts to char array and sends. needs to be tested.
   if (loggerOn) {
     Wire.write(data[index]); 
     index ++;  
+    // for loop for sending data 
     if(index >= sizeof(data)/sizeof(int)){
       index = 0; 
     }
   }
   else {
+    // State 0: handshake
     Wire.write(1);
     loggerOn = true;
     digitalWrite(13, LOW); 
