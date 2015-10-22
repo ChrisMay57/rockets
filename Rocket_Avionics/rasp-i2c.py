@@ -73,7 +73,7 @@ def readPacket(address):
     data = ''
     length = int(mybus.read_byte_data(address));
     print 'length of data: ' + str(length)
-    for ii in xrange length:
+    for ii in xrange(length):
         data += str(mybus.read_byte_data(address))+ ' / ';
     print data
 
