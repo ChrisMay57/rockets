@@ -71,10 +71,10 @@ def scan_i2c():
 
 def readPacket(address):
     data = ''
-    length = int(mybus.read_byte_data(address));
+    length = int(mybus.read_byte(address));
     print 'length of data: ' + str(length)
     for ii in xrange(length):
-        data += str(mybus.read_byte_data(address))+ ' / ';
+        data += str(mybus.read_byte(address))+ ' / ';
     print data
 
 """
