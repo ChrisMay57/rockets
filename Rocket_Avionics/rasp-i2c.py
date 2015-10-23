@@ -112,7 +112,7 @@ if __name__ == "__main__":
 		log.write("**** BEGINNING OF FILE ****")
 		while(True):
 			# loop through each arduino
-			for i in range(0,10):
+			for i in range(0,10): # loop to rescan every 10 cycles
 				for item in arduinos: 
 					# which arduino are we looking for 
 					try: 
@@ -121,13 +121,10 @@ if __name__ == "__main__":
 						dataBack = readPacket(item)
 						log.write(dataBack + "\n")
 					except:
-						arduinos = scan_i2c()
-						#if(testAddress(item)):
-						#	print "connected i2c:"
-						#	print connected_i2c
+						arduinos = scan_i2c()  # lost an arduino = rescan
 					# sleep a bit 
 					time.sleep(0.5)
-			arduinos = scan_i2c()	
+			arduinos = scan_i2c()	#rescan at end of 10 cycles
 			# sleep a bit
 			time.sleep(2)
 
