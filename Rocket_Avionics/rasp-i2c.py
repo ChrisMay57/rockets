@@ -113,7 +113,7 @@ if __name__ == "__main__":
 			# sleep a bit 
 			time.sleep(1/1000)
 		# sleep a bit
-		time.sleep(pingRate/1000)
+		time.sleep(2)
 
 
 	# with open(filename, "a") as log:
