@@ -105,16 +105,16 @@ if __name__ == "__main__":
 	# print pi2c
 
 	# loop infinitely to get data
-	# while(True):
-	# 	# loop through each arduino
-	# 	for item in arduinos: 
-	# 		# which arduino are we looking for 
-	# 		print 'reading to %s' % (item)
-	# 		dataBack = readPacket(item)
-	# 		# sleep a bit 
-	# 		time.sleep(1/1000)
-	# 	# sleep a bit
-	# 	time.sleep(pingRate/1000)
+	while(True):
+		# loop through each arduino
+		for item in arduinos: 
+			# which arduino are we looking for 
+			print 'reading to %s' % (item)
+			dataBack = readPacket(item)
+			# sleep a bit 
+			time.sleep(1/1000)
+		# sleep a bit
+		time.sleep(2)
 
 
 	# with open(filename, "a") as log:
