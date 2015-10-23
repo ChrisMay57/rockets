@@ -100,7 +100,7 @@ pingRate = 50
 
 if __name__ == "__main__":
 	arduinos = scan_i2c() 
-	print arduinos
+	print 'done with arduinos'
 	# pi2c = I2C(arduinos)
 	# print pi2c
 
