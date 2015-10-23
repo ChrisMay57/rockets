@@ -114,6 +114,7 @@ if __name__ == "__main__":
 			for item in arduinos: 
 				# which arduino are we looking for 
 				print 'reading to %s' % (item)
+				log.write("Reading from Arduino on port: %i" % (item))
 				dataBack = readPacket(item)
 				log.write(dataBack + "\n")
 				# sleep a bit 
