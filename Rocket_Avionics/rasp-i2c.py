@@ -114,10 +114,15 @@ if __name__ == "__main__":
 			# loop through each arduino
 			for item in arduinos: 
 				# which arduino are we looking for 
-				print 'reading to %s' % (item)
-				log.write("Reading from Arduino on port: %i \n" % (item))
-				dataBack = readPacket(item)
-				log.write(dataBack + "\n")
+				try: 
+					print 'reading to %s' % (item)
+					log.write("Reading from Arduino on port: %i \n" % (item))
+					dataBack = readPacket(item)
+					log.write(dataBack + "\n")
+				except:
+					if(testAddress(item))
+						print "connected i2c:"
+						print connected_i2c
 				# sleep a bit 
 				time.sleep(0.5)
 			# sleep a bit
