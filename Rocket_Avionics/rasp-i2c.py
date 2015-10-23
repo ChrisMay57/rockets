@@ -120,7 +120,7 @@ if __name__ == "__main__":
 					dataBack = readPacket(item)
 					log.write(dataBack + "\n")
 				except:
-					if(testAddress(item))
+					if(testAddress(item)):
 						print "connected i2c:"
 						print connected_i2c
 				# sleep a bit 
