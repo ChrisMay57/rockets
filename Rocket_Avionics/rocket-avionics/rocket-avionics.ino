@@ -27,7 +27,7 @@
  * * add tutorial credit link!!!
  */
 
-#define SLAVE_ADDRESS 0x06
+#define SLAVE_ADDRESS 0x05
 int number = 0;
 int state = 0;
 
@@ -100,7 +100,7 @@ void sendOne() {
  */
 
 // sample data
-int data[] = {10,10,9,8,7,6,5,4,3,2,1}; 
+int data[] = {2,2,1}; 
 int index = 0; 
 
 /*
