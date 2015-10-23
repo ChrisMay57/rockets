@@ -9,27 +9,32 @@
 
 /*
  * General layout of code:
- *
- * The Arduino constantly updates sensors in the loop.
- * The Pi communicates via i2c to the arduino; the Wire
- * library triggers an interrupt that will send the latest
- * data to the Arduino. The Arduino will return a message
- * confirming receipt of the data.
- *
+ * 
+ * This code is the framework of the comunication protocol
+ * between the Pi and the Arduino. The Arduino is in state 0 when
+ * turned on. When it recieves a 1 from the pi, it enters state 1. 
+ * When it receives a read request while in state 1, it enters 
+ * sends a 1 back to the pi and enters state 2. When it gets a read request 
+ * in state 2, it sends the data that it has saved. If at any time it 
+ * recieves a 1, it enters state 1 agian, sends the 1 back to the pi, and 
+ * enters stat 2.
+ * 
+ * 
  * The Pi will cycle through all connected i2c addresses
  * to obtain data from multiple boards. It will log and
  * process this data.
  */
 
-/*
- * TODO:
- *
- * * add tutorial credit link!!!
- */
-
 #define SLAVE_ADDRESS 0x05
-int number = 0;
-int state = 0;
+int number = 0;              //Andrew wrote this Idk what it is 
+int state = 0;               //This is the state, which starts at 0
+boolean loggerOn = false;
+
+
+// sample data
+int data[] = {3,6,6,6}; 
+int index = 0; 
+
 
 void setup() {
   pinMode(13, OUTPUT);
@@ -64,9 +69,12 @@ float logTime = 0;
  * Use smart timing instead.
  */
 
-boolean loggerOn = false;
+
 void loop() {
-  delay(100); // temporary
+  // delay(100); // temporary
+  data[1] = random(0,254);
+  data[2] = random(0,254);
+  data[3] = random(0,254);
 }
 
 /*
@@ -79,7 +87,7 @@ void receiveData(int byteCount) {
     Serial.println(number);
 
     if (number == 1) {
-      // sendOne();
+      state = 1;
       Serial.println("I HAVE BEEN ACTIVATED");
     }
     else {
@@ -88,20 +96,11 @@ void receiveData(int byteCount) {
   }
 }
 
-/*
- * Just send the number 1.
- */
-void sendOne() {
-  Wire.write(1);
-}
 
 /*
  * Send data to Raspberry Pi.
  */
 
-// sample data
-int data[] = {2,2,1}; 
-int index = 0; 
 
 /*
  * Send data to pi. 
@@ -110,18 +109,23 @@ int index = 0;
  * TODO: a reset byte for index (can be upset with small errors now). 
  */
 void sendData() {
-  if (loggerOn) {
+  switch(state){
+    case 1:   //state 1, send a 1 back to the pi
+    Wire.write(1);
+    loggerOn = true;
+    digitalWrite(13, LOW); 
+    state = 2;
+    break;
+
+    case 2:   // state 2, send data to the pi
     Wire.write(data[index]); 
     index ++;  
     // for loop for sending data 
     if(index >= sizeof(data)/sizeof(int)){
       index = 0; 
     }
-  }
-  else {
-    // State 0: handshake
-    Wire.write(1);
-    loggerOn = true;
-    digitalWrite(13, LOW); 
+    break;
+    
+   
   }
 }
