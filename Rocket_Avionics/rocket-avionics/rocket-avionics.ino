@@ -32,11 +32,12 @@ boolean loggerOn = false;
 
 
 // sample data
-int data[] = {3,6,6,6}; 
+int data[10]; 
 int index = 0; 
 
 
 void setup() {
+  data[0] = 9;
   pinMode(13, OUTPUT);
   Serial.begin(9600); // start serial for output
   // Init i2c given address
@@ -72,9 +73,9 @@ float logTime = 0;
 
 void loop() {
   // delay(100); // temporary
-  data[1] = random(0,254);
-  data[2] = random(0,254);
-  data[3] = random(0,254);
+  for(int jj = 1 ; jj < 10 ; jj++) {
+  data[jj] = random(0,254);
+  }
 }
 
 /*
