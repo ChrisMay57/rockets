@@ -111,7 +111,7 @@ if __name__ == "__main__":
 			print 'reading to %s' % (item)
 			dataBack = readPacket(item)
 			# sleep a bit 
-			time.sleep(1/1000)
+			time.sleep(0.5)
 		# sleep a bit
 		time.sleep(2)
 
