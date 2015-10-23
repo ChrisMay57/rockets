@@ -104,6 +104,10 @@ if __name__ == "__main__":
 	# print pi2c
 
 	# loop infinitely to get data
+	f = open('log.txt', 'r+')
+	f.truncate()
+	f.close()
+
 	with open("log.txt", "a") as log:
 		while(True):
 			# loop through each arduino
