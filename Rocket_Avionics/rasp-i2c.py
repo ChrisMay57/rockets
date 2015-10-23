@@ -109,6 +109,7 @@ if __name__ == "__main__":
 	f.close()
 
 	with open("log.txt", "a") as log:
+		log.write("**** BEGINNING OF FILE ****")
 		while(True):
 			# loop through each arduino
 			for item in arduinos: 
