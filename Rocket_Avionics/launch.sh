@@ -4,8 +4,11 @@
 #!/bin/sh
 sleep 10
 
-cd
+cd /
+cd home
+cd pi
 cd Desktop
 cd Code
+cd rockets
 cd Rocket_Avionics
 sudo python rasp-i2c.py
