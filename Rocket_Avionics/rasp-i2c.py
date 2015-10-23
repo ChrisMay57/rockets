@@ -127,7 +127,7 @@ if __name__ == "__main__":
 						#	print connected_i2c
 					# sleep a bit 
 					time.sleep(0.5)
-				arduinos = scan_i2c()	
+			arduinos = scan_i2c()	
 			# sleep a bit
 			time.sleep(2)
 
