@@ -100,20 +100,21 @@ pingRate = 50
 
 if __name__ == "__main__":
 	arduinos = scan_i2c() 
+	print arduinos
 	# pi2c = I2C(arduinos)
 	# print pi2c
 
 	# loop infinitely to get data
-	while(True):
-		# loop through each arduino
-		for item in arduinos: 
-			# which arduino are we looking for 
-			print 'reading to %s' % (item)
-			dataBack = readPacket(item)
-			# sleep a bit 
-			time.sleep(1/1000)
-		# sleep a bit
-		time.sleep(pingRate/1000)
+	# while(True):
+	# 	# loop through each arduino
+	# 	for item in arduinos: 
+	# 		# which arduino are we looking for 
+	# 		print 'reading to %s' % (item)
+	# 		dataBack = readPacket(item)
+	# 		# sleep a bit 
+	# 		time.sleep(1/1000)
+	# 	# sleep a bit
+	# 	time.sleep(pingRate/1000)
 
 
 	# with open(filename, "a") as log:
