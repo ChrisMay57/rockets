@@ -1,9 +1,10 @@
+
 #include <i2c_t3.h>
 /*
  * Raspberry Pi <-> Arduino Communication: Rocket Avionics
  * SSI 2015
  *
- * Â© SSI 2015
+ * © SSI 2015
  */
 
 /*
@@ -37,10 +38,10 @@ unsigned int index1 = 0;
 
 void setup() {
   data[0] = 9;
-  pinMode(13, OUTPUT);
+  pinMode(LED_BUILTIN,OUTPUT); // LED
   Serial.begin(9600); // start serial for output
   // Init i2c given address
-  Wire.begin(SLAVE_ADDRESS);
+  Wire.begin(I2C_SLAVE, SLAVE_ADDRESS, I2C_PINS_18_19, I2C_PULLUP_EXT, I2C_RATE_400);
 
   Wire.onReceive(receiveData);
   Wire.onRequest(sendData);
@@ -74,15 +75,13 @@ void loop() {
   // delay(100); // temporary
   for(int jj = 1 ; jj < 10 ; jj++) {
   data[jj] = random(0,254);
-  
   }
 }
 
 /*
- * 
  * Read data from Pi
  */
-void receiveData(int byteCount) {
+void receiveData(size_t byteCount) {
   while (Wire.available()) {
     number = Wire.read();
     Serial.print("data received: ");
@@ -131,4 +130,3 @@ void sendData() {
    
   }
 }
-
