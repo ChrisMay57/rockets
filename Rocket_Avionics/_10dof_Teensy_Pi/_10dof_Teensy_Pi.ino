@@ -29,7 +29,7 @@ float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA;
  * sends a 1 back to the pi and enters state 2. When it gets a read request
  * in state 2, it sends the data that it has saved. If at any time it
  * recieves a 1, it enters state 1 agian, sends the 1 back to the pi, and
- * enters stat 2.
+ * enters state 2.
  *
  *
  * The Pi will cycle through all connected i2c addresses
@@ -39,16 +39,16 @@ float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA;
 
 #define SLAVE_ADDRESS0 0x05
 #define SLAVE_ADDRESS1 0x07
+#define DEC_PRECISION  100
 
 int number = 0;              //Andrew wrote this Idk what it is
 int state = 0;               //This is the state, which starts at 0
 boolean loggerOn = false;
 
-
 // sample data
 //int data[10];
 //actual data
-int sensorData[6];
+int sensorData[11];
 unsigned int index1 = 0;
 
 void initSensors()
@@ -108,11 +108,13 @@ void collectData() {
     /* 'orientation' should have valid .roll and .pitch fields */
     Serial.print(F("Roll: "));
     Serial.print(orientation.roll);
-    sensorData[1] = orientation.roll;
+    sensorData[1] = floor(orientation.roll);
+    sensorData[2] = DEC_PRECISION*(orientation.roll - floor(orientation.roll));
     Serial.print(F("; "));
     Serial.print(F("Pitch: "));
     Serial.print(orientation.pitch);
-    sensorData[2] = orientation.pitch;
+    sensorData[3] = orientation.pitch;
+    sensorData[4] = DEC_PRECISION*(orientation.pitch - floor(orientation.pitch));
     Serial.print(F("; "));
   }
 
@@ -123,7 +125,8 @@ void collectData() {
     /* 'orientation' should have valid .heading data now */
     Serial.print(F("Heading: "));
     Serial.print(orientation.heading);
-    sensorData[3] = orientation.heading;
+    sensorData[5] = orientation.heading;
+    sensorData[6] = DEC_PRECISION*(orientation.heading - floor(orientation.heading));
     Serial.print(F("; "));
   }
 
@@ -139,14 +142,17 @@ void collectData() {
     Serial.print(bmp.pressureToAltitude(seaLevelPressure,
                                         bmp_event.pressure,
                                         temperature));
-    sensorData[4] = bmp.pressureToAltitude(seaLevelPressure,
+    float alt = bmp.pressureToAltitude(seaLevelPressure,
                                            bmp_event.pressure,
                                            temperature);
+    sensorData[7] = floor(alt); 
+    sensorData[8] = DEC_PRECISION*(alt - floor(alt)); 
     Serial.print(F(" m; "));
     /* Display the temperature */
     Serial.print(F("Temp: "));
     Serial.print(temperature);
-    sensorData[5] = temperature;
+    sensorData[9] = floor(temperature);
+    sensorData[10] = DEC_PRECISION*(temperature - floor(temperature));
     Serial.print(F(" C"));
   }
 
