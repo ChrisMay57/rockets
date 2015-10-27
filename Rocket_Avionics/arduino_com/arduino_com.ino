@@ -87,10 +87,6 @@ float logTime = 0;
 
 
 void loop() {
-  // delay(100); // temporary
-  //  for(int jj = 1 ; jj < 10 ; jj++) {
-  //  data[jj] = random(0,254);
-  //  }
   delay(100); 
 }
 
