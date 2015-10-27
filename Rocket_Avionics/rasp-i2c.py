@@ -1,5 +1,6 @@
 import smbus
 import time
+import struct
 
 filename = "log.txt"
 logData = True 
@@ -76,14 +77,25 @@ def scan_i2c():
 
 def readPacket(address):
     data = ''
+    data2 = []
     length = int(mybus.read_byte(address));
     print 'length of data: ' + str(length)
     for ii in xrange(length):
     	try: 
-        	data += str(mybus.read_byte(address))+ ' / ';
+        	k = mybus.read_byte(address)
+		data += str(k)+ ' / ';
+		data2.append(k)
        	except: 
        		return data 
-    print data
+    
+    for jj in xrange(5):
+    	ByteArray = data2[jj*4:(jj+1)*4]
+    	b = ''.join(chr(i) for i in ByteArray)
+    	print struct.unpack('f',b)
+
+    #print data
+    #print b
+    #print data2
     return data 
 
 """
@@ -111,19 +123,15 @@ if __name__ == "__main__":
 	data_count = 0
 
 	with open("log.txt", "a") as log:
-		log.write("**** BEGINNING OF FILE ****")
+		#log.write("**** BEGINNING OF FILE ****")
 		while(True):
+			data_count = data_count + 1
 			# loop through each arduino
 			if(data_count % 10 == 0): 
 				devices = scan_i2c() # rescan at end of 10 cycles
 									  # put them into test mode 
-			if(data_count % 100 == 0): 
-				for item in devices: 
-					writeData(3, item)
-					time.sleep(0.1)
-					writeData(2, item)
 
-
+    
 			for item in devices: 
 				# which arduino are we looking for 
 				try: 
@@ -136,7 +144,7 @@ if __name__ == "__main__":
 				# sleep a bit 
 				time.sleep(0.5)
 			# sleep a bit
-			time.sleep(2)
+			#time.sleep(2)
 
 
 	# with open(filename, "a") as log:
