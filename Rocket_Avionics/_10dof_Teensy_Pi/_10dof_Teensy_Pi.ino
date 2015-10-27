@@ -48,8 +48,16 @@ boolean loggerOn = false;
 // sample data
 //int data[10];
 //actual data
-int sensorData[11];
+int sensorData[21];
 unsigned int index1 = 0;
+
+
+union u_tag{
+  byte b[4];
+  float fval;
+} u;
+
+
 
 void initSensors()
 {
@@ -77,7 +85,7 @@ void initSensors()
 void setup() {
   //  data[0] = 9;
 
-  sensorData[0] = 5;
+  sensorData[0] = 20;
   pinMode(LED_BUILTIN, OUTPUT); // LED
   Serial.begin(9600); // start serial for output
   // Init i2c given address
@@ -108,14 +116,19 @@ void collectData() {
     /* 'orientation' should have valid .roll and .pitch fields */
     Serial.print(F("Roll: "));
     Serial.print(orientation.roll);
-    sensorData[1] = floor(orientation.roll);
-    sensorData[2] = DEC_PRECISION*(orientation.roll - floor(orientation.roll));
     Serial.print(F("; "));
+    u.fval = orientation.roll;
+    for (int ii = 0; ii < 4; ii++ ){
+      sensorData[ii+1] = u.b[ii];
+    }
+
     Serial.print(F("Pitch: "));
     Serial.print(orientation.pitch);
-    sensorData[3] = orientation.pitch;
-    sensorData[4] = DEC_PRECISION*(orientation.pitch - floor(orientation.pitch));
     Serial.print(F("; "));
+    u.fval = orientation.pitch;
+    for (int ii = 0; ii < 4; ii++ ){
+      sensorData[ii+5] = u.b[ii];
+    }
   }
 
   /* Calculate the heading using the magnetometer */
@@ -125,9 +138,11 @@ void collectData() {
     /* 'orientation' should have valid .heading data now */
     Serial.print(F("Heading: "));
     Serial.print(orientation.heading);
-    sensorData[5] = orientation.heading;
-    sensorData[6] = DEC_PRECISION*(orientation.heading - floor(orientation.heading));
     Serial.print(F("; "));
+    u.fval = orientation.heading;
+    for (int ii = 0; ii < 4; ii++ ){
+      sensorData[ii+9] = u.b[ii];
+    }
   }
 
   /* Calculate the altitude using the barometric pressure sensor */
@@ -145,17 +160,22 @@ void collectData() {
     float alt = bmp.pressureToAltitude(seaLevelPressure,
                                            bmp_event.pressure,
                                            temperature);
-    sensorData[7] = floor(alt); 
-    sensorData[8] = DEC_PRECISION*(alt - floor(alt)); 
     Serial.print(F(" m; "));
+    u.fval = alt;
+    for (int ii = 0; ii < 4; ii++ ){
+      sensorData[ii+13] = u.b[ii];
+    }
+    
     /* Display the temperature */
     Serial.print(F("Temp: "));
     Serial.print(temperature);
-    sensorData[9] = floor(temperature);
-    sensorData[10] = DEC_PRECISION*(temperature - floor(temperature));
     Serial.print(F(" C"));
+    u.fval = temperature;
+    for (int ii = 0; ii < 4; ii++ ){
+      sensorData[ii+17] = u.b[ii];
+    }
   }
-
+  sensorData[0] = 20;
   Serial.println(F(""));
   delay(1000);
 
