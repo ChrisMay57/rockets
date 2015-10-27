@@ -49,7 +49,7 @@ def testAddress(address):
 def writeNumber(value, address):
 	mybus.write_byte(address, value)
 	# bus.write_byte_data(address, 0, value)
-	return -1
+	return 
 
 """
 	Read a byte (number) from an address 
@@ -99,7 +99,7 @@ def writeData(log, data):
 pingRate = 50 
 
 if __name__ == "__main__":
-	arduinos = scan_i2c() 
+	devices = scan_i2c() 
 	# pi2c = I2C(arduinos)
 	# print pi2c
 
@@ -108,23 +108,33 @@ if __name__ == "__main__":
 	f.truncate()
 	f.close()
 
+	data_count = 0
+
 	with open("log.txt", "a") as log:
 		log.write("**** BEGINNING OF FILE ****")
 		while(True):
 			# loop through each arduino
-			for i in range(0,10): # loop to rescan every 10 cycles
-				for item in arduinos: 
-					# which arduino are we looking for 
-					try: 
-						print 'reading to %s' % (item)
-						log.write("Reading from Arduino on port: %i \n" % (item))
-						dataBack = readPacket(item)
-						log.write(dataBack + "\n")
-					except:
-						arduinos = scan_i2c()  # lost an arduino = rescan
-					# sleep a bit 
-					time.sleep(0.5)
-			arduinos = scan_i2c()	#rescan at end of 10 cycles
+			if(data_count % 10 == 0): 
+				devices = scan_i2c() # rescan at end of 10 cycles
+									  # put them into test mode 
+			if(data_count % 100 == 0): 
+				for item in devices: 
+					writeData(3, item)
+					time.sleep(0.1)
+					writeData(2, item)
+
+
+			for item in devices: 
+				# which arduino are we looking for 
+				try: 
+					print 'reading to %s' % (item)
+					log.write("Reading from Arduino on port: %i \n" % (item))
+					dataBack = readPacket(item)
+					log.write(dataBack + "\n")
+				except:
+					devices = scan_i2c()  # lost an arduino = rescan
+				# sleep a bit 
+				time.sleep(0.5)
 			# sleep a bit
 			time.sleep(2)
 
