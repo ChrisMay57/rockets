@@ -66,7 +66,7 @@ void setup() {
   Serial.begin(9600); // start serial for output
   
   // Init i2c given address
-  Wire.begin(I2C_SLAVE, SLAVE_ADDRESS, I2C_PINS_18_19, I2C_PULLUP_EXT, I2C_RATE_400);
+  Wire.begin(I2C_SLAVE, SLAVE_ADDRESS0, I2C_PINS_18_19, I2C_PULLUP_EXT, I2C_RATE_400);
   Wire1.begin(I2C_SLAVE, SLAVE_ADDRESS1, I2C_PINS_29_30, I2C_PULLUP_EXT, I2C_RATE_400);
   //  Wire.begin(I2C_SLAVE, SLAVE_ADDRESS, I2C_PINS_16_17, I2C_PULLUP_EXT, I2C_RATE_400);
 
@@ -118,6 +118,7 @@ void receiveData(size_t byteCount) {
  * Either sends a '1' to activate or actual data.
  *
  * TODO: a reset byte for index1 (can be upset with small errors now).
+ *  DONE: 10/26/15
  */
 int testData[6] = {1,1,1,1,1,1};
  
