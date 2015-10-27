@@ -81,12 +81,12 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT); // LED
   Serial.begin(9600); // start serial for output
   // Init i2c given address
-  Wire.begin(I2C_SLAVE, SLAVE_ADDRESS, I2C_PINS_18_19, I2C_PULLUP_EXT, I2C_RATE_400);
+  Wire.begin(I2C_SLAVE, SLAVE_ADDRESS0, I2C_PINS_18_19, I2C_PULLUP_EXT, I2C_RATE_400);
   Wire1.begin(I2C_SLAVE, SLAVE_ADDRESS1, I2C_PINS_29_30, I2C_PULLUP_EXT, I2C_RATE_400);
   //  Wire.begin(I2C_SLAVE, SLAVE_ADDRESS, I2C_PINS_16_17, I2C_PULLUP_EXT, I2C_RATE_400);
 
-  Wire.onReceive(receiveData);
-  Wire.onRequest(sendData);
+  Wire1.onReceive(receiveData);
+  Wire1.onRequest(sendData);
   initSensors();
   Serial.println("Ready!");
 }
@@ -179,8 +179,8 @@ void loop() {
  * Read data from Pi
  */
 void receiveData(size_t byteCount) {
-  while (Wire.available()) {
-    number = Wire.read();
+  while (Wire1.available()) {
+    number = Wire1.read();
     Serial.print("data received: ");
     Serial.println(number);
 
@@ -208,14 +208,14 @@ void receiveData(size_t byteCount) {
  */
 void sendData() {
   if (state == 1) {
-    Wire.write(1);
+    Wire1.write(1);
     loggerOn = true;
     digitalWrite(13, LOW);
     state = 2;
     return;
   }
   else if (state == 2) {
-    Wire.write(sensorData[index1]);
+    Wire1.write(sensorData[index1]);
     index1 ++;
     // for loop for sending data
     if (index1 >= sizeof(sensorData) / sizeof(int)) {
