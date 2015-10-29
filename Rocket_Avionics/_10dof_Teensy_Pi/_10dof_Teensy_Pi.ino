@@ -1,17 +1,3 @@
-#include <i2c_t3.h>
-#include <Adafruit_10DOF.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_LSM303_U.h>
-#include <Adafruit_BMP085_U.h>
-#include <Adafruit_L3GD20_U.h>
-
-Adafruit_10DOF                dof   = Adafruit_10DOF();
-Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(30301);
-Adafruit_LSM303_Mag_Unified   mag   = Adafruit_LSM303_Mag_Unified(30302);
-Adafruit_BMP085_Unified       bmp   = Adafruit_BMP085_Unified(18001);
-
-float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA;
-
 /*
  * Raspberry Pi <-> Arduino Communication: Rocket Avionics
  * SSI 2015
@@ -37,28 +23,36 @@ float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA;
  * process this data.
  */
 
+#include <i2c_t3.h>
+#include <Adafruit_10DOF.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_LSM303_U.h>
+#include <Adafruit_BMP085_U.h>
+#include <Adafruit_L3GD20_U.h>
+
+// Initialization for sensors
+Adafruit_10DOF                dof   = Adafruit_10DOF();
+Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(30301);
+Adafruit_LSM303_Mag_Unified   mag   = Adafruit_LSM303_Mag_Unified(30302);
+Adafruit_BMP085_Unified       bmp   = Adafruit_BMP085_Unified(18001);
+float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA;
+
+//Assinging adresses for I2C
 #define SLAVE_ADDRESS0 0x05
 #define SLAVE_ADDRESS1 0x07
 #define DEC_PRECISION  100
 
-int number = 0;              //Andrew wrote this Idk what it is
 int state = 0;               //This is the state, which starts at 0
-boolean loggerOn = false;
+int sensorData[21];          //Array for storing sensor data
+unsigned int index1 = 0;     //Index for sending sendor data
 
-// sample data
-//int data[10];
-//actual data
-int sensorData[21];
-unsigned int index1 = 0;
-
-
+//union between a array of four bytes and a float, used for sending data
 union u_tag{
   byte b[4];
   float fval;
 } u;
 
-
-
+//Initializatoin of Sensors
 void initSensors()
 {
   if (!accel.begin())
@@ -83,9 +77,7 @@ void initSensors()
 
 
 void setup() {
-  //  data[0] = 9;
-
-  sensorData[0] = 20;
+  sensorData[0] = 20; //The first value in the array gives the length of the arry 
   pinMode(LED_BUILTIN, OUTPUT); // LED
   Serial.begin(9600); // start serial for output
   // Init i2c given address
@@ -98,7 +90,6 @@ void setup() {
   initSensors();
   Serial.println("Ready!");
 }
-
 
 
 /*
@@ -183,21 +174,8 @@ void collectData() {
   return;
 }
 
-// Used for keeping time
-int tickRate = 100;
-float logTime = 0;
-
-/*
- * Gather data every tick. Do not delay - this scan screw up interrupts.
- * Use smart timing instead.
- */
-
 
 void loop() {
-  // delay(100); // temporary
-  //  for(int jj = 1 ; jj < 10 ; jj++) {
-  //  data[jj] = random(0,254);
-  //  }
   collectData();
 }
 
@@ -205,6 +183,7 @@ void loop() {
  * Read data from Pi
  */
 void receiveData(size_t byteCount) {
+  int number = 0;
   while (Wire1.available()) {
     number = Wire1.read();
     Serial.print("data received: ");
@@ -220,22 +199,14 @@ void receiveData(size_t byteCount) {
   }
 }
 
-
-/*
- * Send data to Raspberry Pi.
- */
-
-
 /*
  * Send data to pi.
  * Either sends a '1' to activate or actual data.
- *
- * TODO: a reset byte for index1 (can be upset with small errors now).
+ * 
  */
 void sendData() {
-  if (state == 1) {
+  if (state == 1) {  //This is the initialization phase, after the pi sends a 1, now the teensy responds with a 1
     Wire1.write(1);
-    loggerOn = true;
     digitalWrite(13, LOW);
     state = 2;
     return;
