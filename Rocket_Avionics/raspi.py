@@ -93,12 +93,8 @@ def readPacket(address):
     	ByteArray = data2[jj*4:(jj+1)*4]
     	b = ''.join(chr(i) for i in ByteArray)
     	f = struct.unpack('f',b)
-    	print f
     	data_arr.append(f)
 
-    #print data
-    #print b
-    #print data2
     return f 
 
 """
@@ -137,7 +133,8 @@ if __name__ == "__main__":
 				try: 
 					print 'reading to [%s]' % (item)
 					log.write("Reading from Arduino on port: %i \n" % (item))
-					dataBack = readPacket(item)
+					data_back = readPacket(item)
+					print data_back
 					log.write(dataBack + "\n")
 				except:
 					devices = scan_i2c()  # lost an arduino = rescan
