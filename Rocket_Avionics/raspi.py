@@ -1,4 +1,3 @@
-import picamera
 import smbus
 import time
 import struct
@@ -9,6 +8,28 @@ logData = True
 mybus = smbus.SMBus(1)
 
 """
+	Manages i2c communication with arduinos.  
+"""
+class I2C: 
+	def __init__(self, addresses):
+		self.addresses = addresses # sets Pi's arduino addresses to result of search 
+		return 
+
+	def writeData(self, value, address):
+		mybus.write_byte(address, value)
+		return -1
+	
+	def readData(self, address):
+		number = mybus.ead_byte(address)
+		return number
+
+	def gatherData(self): 
+		data = []
+		for add in addresses: 
+			data.append(readData(add))
+		return data # this is indexed by the Arduino 
+
+"""
 1 byte read write from: http://blog.oscarliang.net/raspberry-pi-arduino-connected-i2c/
 """
 def testAddress(address):
@@ -16,7 +37,7 @@ def testAddress(address):
 		writeNumber(1, address) 
 	except: 
 		return False 
-	time.sleep(0.25)
+	time.sleep(1)
 	number = readNumber(address)
 
 	if number == 1: 
@@ -28,6 +49,7 @@ def testAddress(address):
 """
 def writeNumber(value, address):
 	mybus.write_byte(address, value)
+	# bus.write_byte_data(address, 0, value)
 	return 
 
 """
@@ -35,6 +57,7 @@ def writeNumber(value, address):
 """
 def readNumber(address):
 	number = mybus.read_byte(address)
+	# number = bus.read_byte_data(address, 1)
 	return number
 
 """
@@ -47,67 +70,68 @@ def scan_i2c():
 		if(testAddress(jj)): 
 			connected_i2c.append(jj)
 
-	print "connected i2c: "
+	print "connected i2c:"
 	print connected_i2c
+
 	return connected_i2c 
 
-"""
-Read a packet 
-"""
 def readPacket(address):
     data = ''
+    data2 = []
     length = int(mybus.read_byte(address));
     print 'length of data: ' + str(length)
     for ii in xrange(length):
     	try: 
-        	data += str(mybus.read_byte(address))+ ' / ';
+        	k = mybus.read_byte(address)
+		data += str(k)+ ' / ';
+		data2.append(k)
        	except: 
        		return data 
-
-    data_arr = []
-
+    
     for jj in xrange(5):
-     	ByteArray = data2[jj*4:(jj+1)*4]
-     	b = ''.join(chr(i) for i in ByteArray)
-     	print struct.unpack('f',b)
- 
-     #print data
-     #print b
-     #print data2
+    	ByteArray = data2[jj*4:(jj+1)*4]
+    	b = ''.join(chr(i) for i in ByteArray)
+    	print struct.unpack('f',b)
+
+    #print data
+    #print b
+    #print data2
     return data 
 
 """
-	Communication constants. 
+	Write data to file (not to i2c). 
 """
-rescan_rate = 10 
-data_count = 0
-cam_num = 0
+def writeData(log, data):
+	log.write("Arduino Data:")
+	for ii in xrange(len(data)): 
+		log.write(ii + ": " + data[ii])
+	log.write("\n")
+
+# ping rate for data
+pingRate = 50 
 
 if __name__ == "__main__":
 	devices = scan_i2c() 
-	print devices
+	# pi2c = I2C(arduinos)
+	# print pi2c
 
 	# loop infinitely to get data
-	# reset the log file
 	f = open('log.txt', 'r+')
 	f.truncate()
 	f.close()
 
+	data_count = 0
+
 	with open("log.txt", "a") as log:
-		log.write("**** BEGINNING OF FILE ****")
+		#log.write("**** BEGINNING OF FILE ****")
 		while(True):
+			data_count = data_count + 1
 			# loop through each arduino
-			if(data_count % rescan_rate == 0): 
+			if(data_count % 10 == 0): 
 				devices = scan_i2c() # rescan at end of 10 cycles
 									  # put them into test mode 
-				# with picamera.PiCamera() as camera:
-				# 	# take a picture
-    			# 	camera.start_preview()
-    			# 	time.sleep(5)
-    			# 	camera.capture('/home/pi/Desktop/image%s.jpg' % (cam_num))
-    			# 	camera.stop_preview()
-    			# 	cam_num += 1
 
+    
 			for item in devices: 
 				# which arduino are we looking for 
 				try: 
@@ -120,4 +144,12 @@ if __name__ == "__main__":
 				# sleep a bit 
 				time.sleep(0.5)
 			# sleep a bit
-			time.sleep(2)
+			#time.sleep(2)
+
+
+	# with open(filename, "a") as log:
+	# 	while logData:
+	# 		for item in pi2c: 
+	# 			currentData = pi2c.gatherData()
+	# 			writeData(log, currentData)
+	# 		time.sleep(pingRate / 1000) # 50 milliseconds
