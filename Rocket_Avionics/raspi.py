@@ -138,10 +138,8 @@ if __name__ == "__main__":
 						data_line += str(data_back[ii]) + ","
 
 					data_line += "\n"
-					print data_line
 					log.write(data_line)
 				except:
-					print 'fail'
 					devices = scan_i2c()  # lost an arduino = rescan
 				# sleep a bit 
 				time.sleep(0.5)
