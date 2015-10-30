@@ -128,20 +128,20 @@ if __name__ == "__main__":
     
 			for item in devices: 
 				# which arduino are we looking for 
-				 
-				print 'reading to [%s]' % (item)
-				log.write("Reading from Arduino on port: %i \n" % (item))
-				data_back = readPacket(item)
-				data_line = ""; 
+				try: 
+					print 'reading to [%s]' % (item)
+					log.write("Reading from Arduino on port: %i \n" % (item))
+					data_back = readPacket(item)
+					data_line = ""; 
 
-				for ii in xrange(len(data_back)):
-					data_line += data_back[ii] + ","
+					for ii in xrange(len(data_back)):
+						data_line += str(data_back[ii]) + ","
 
-				data_line += "\n"
-				print data_line
-				log.write(data_line)
-				# except:
-				# 	print 'fail'
-				# 	devices = scan_i2c()  # lost an arduino = rescan
+					data_line += "\n"
+					print data_line
+					log.write(data_line)
+				except:
+					print 'fail'
+					devices = scan_i2c()  # lost an arduino = rescan
 				# sleep a bit 
 				time.sleep(0.5)
