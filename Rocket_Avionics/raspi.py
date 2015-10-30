@@ -133,11 +133,8 @@ if __name__ == "__main__":
 					log.write("Reading from Arduino on port: %i \n" % (item))
 					data_back = readPacket(item)
 					print data_back, len(data_back)
-					for thing in data_back: 
-						print 'hi', thing
-						log.write(thing)
-						log.write(",")
-						log.write("\n")
+					for ii in xrange(len(data_back)):
+						print data_back[ii]
 				except:
 					print 'fail'
 					devices = scan_i2c()  # lost an arduino = rescan
