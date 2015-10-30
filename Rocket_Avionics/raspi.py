@@ -133,9 +133,9 @@ if __name__ == "__main__":
 					log.write("Reading from Arduino on port: %i \n" % (item))
 					data_back = readPacket(item)
 					print data_back
-					for item in data_back: 
-						print 'hi', item
-						log.write(item)
+					for thing in data_back: 
+						print 'hi', thing
+						log.write(thing)
 						log.write(",")
 						log.write("\n")
 				except:
