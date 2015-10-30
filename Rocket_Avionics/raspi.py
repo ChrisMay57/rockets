@@ -1,3 +1,4 @@
+import picamera
 import smbus
 import time
 
@@ -76,6 +77,7 @@ def readPacket(address):
 """
 rescan_rate = 0 
 data_count = 0
+cam_num = 0
 
 if __name__ == "__main__":
 	devices = scan_i2c() 
@@ -94,6 +96,13 @@ if __name__ == "__main__":
 			if(data_count % rescan_rate == 0): 
 				devices = scan_i2c() # rescan at end of 10 cycles
 									  # put them into test mode 
+				# with picamera.PiCamera() as camera:
+				# 	# take a picture
+    			# 	camera.start_preview()
+    			# 	time.sleep(5)
+    			# 	camera.capture('/home/pi/Desktop/image%s.jpg' % (cam_num))
+    			# 	camera.stop_preview()
+    			# 	cam_num += 1
 
 			for item in devices: 
 				# which arduino are we looking for 
