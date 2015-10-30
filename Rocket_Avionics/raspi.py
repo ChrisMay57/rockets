@@ -95,7 +95,7 @@ def readPacket(address):
     	s = str(f)[1:-2]
     	print s
     	data_arr.append(float(s)
-    print 'arr: ' + data_arr
+    #print 'arr: ' + data_arr
     return data
 
 """
