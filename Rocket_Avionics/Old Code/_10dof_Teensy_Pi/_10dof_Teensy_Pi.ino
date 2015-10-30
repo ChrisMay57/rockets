@@ -75,7 +75,6 @@ void initSensors()
   }
 }
 
-
 void setup() {
   sensorData[0] = 20; //The first value in the array gives the length of the arry 
   pinMode(LED_BUILTIN, OUTPUT); // LED
