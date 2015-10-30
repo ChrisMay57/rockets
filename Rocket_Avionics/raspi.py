@@ -135,6 +135,9 @@ if __name__ == "__main__":
 					print data_back, len(data_back)
 					for ii in xrange(len(data_back)):
 						print data_back[ii]
+						log.write(data_back[ii])
+						log.write(",")
+						log.write("\n")
 				except:
 					print 'fail'
 					devices = scan_i2c()  # lost an arduino = rescan
