@@ -93,9 +93,9 @@ def readPacket(address):
     	ByteArray = data2[jj*4:(jj+1)*4]
     	b = ''.join(chr(i) for i in ByteArray)
     	f = struct.unpack('f',b)
-    	data_arr.append(f)
+    	print f
 
-    return f 
+    return data
 
 """
 	Write data to file (not to i2c). 
@@ -108,6 +108,7 @@ def writeData(log, data):
 
 # ping rate for data
 rescan_rate = 10
+data_count = 0
 
 if __name__ == "__main__":
 	devices = scan_i2c()
@@ -116,8 +117,6 @@ if __name__ == "__main__":
 	f = open('log.txt', 'r+')
 	f.truncate()
 	f.close()
-
-	data_count = 0
 
 	with open("log.txt", "a") as log:
 		#log.write("**** BEGINNING OF FILE ****")
