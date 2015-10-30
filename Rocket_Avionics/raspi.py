@@ -1,6 +1,7 @@
 import picamera
 import smbus
 import time
+import struct
 
 filename = "log.txt"
 logData = True 
