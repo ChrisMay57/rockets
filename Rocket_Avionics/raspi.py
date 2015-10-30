@@ -86,7 +86,7 @@ def readPacket(address):
 		data += str(k)+ ' / ';
 		data2.append(k)
        	except: 
-       		return data 
+       		break  
     
     data_arr = []
     # here, we convert the bytes back into a float
@@ -95,9 +95,7 @@ def readPacket(address):
     	b = ''.join(chr(i) for i in ByteArray)
     	f = struct.unpack('f',b)
     	s = str(f)[1:-2]
-    	print s
     	data_arr.append(float(s)
-    print data_arr
     return data
 
 """
