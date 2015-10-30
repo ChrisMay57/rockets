@@ -134,7 +134,7 @@ if __name__ == "__main__":
 					data_back = readPacket(item)
 					print data_back
 					for item in data_back: 
-						print 'hi'
+						print 'hi', item
 						log.write(item)
 						log.write(",")
 						log.write("\n")
