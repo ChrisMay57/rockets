@@ -75,7 +75,7 @@ def readPacket(address):
 """
 	Communication constants. 
 """
-rescan_rate = 0 
+rescan_rate = 10 
 data_count = 0
 cam_num = 0
 
