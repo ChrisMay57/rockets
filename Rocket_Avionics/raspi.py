@@ -89,6 +89,7 @@ def readPacket(address):
        		return data 
     
     data_arr = []
+    # here, we convert the bytes back into a float 
     for jj in xrange(5):
     	ByteArray = data2[jj*4:(jj+1)*4]
     	b = ''.join(chr(i) for i in ByteArray)
@@ -96,7 +97,7 @@ def readPacket(address):
     	s = str(f)[1:-2]
     	print s
     	data_arr.append(float(s)
-    print data_arr
+    print 'arr: ' + data_arr
     return data
 
 """
