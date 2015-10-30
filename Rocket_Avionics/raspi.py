@@ -139,6 +139,7 @@ if __name__ == "__main__":
 						log.write(",")
 						log.write("\n")
 				except:
+					print 'fail'
 					devices = scan_i2c()  # lost an arduino = rescan
 				# sleep a bit 
 				time.sleep(0.5)
