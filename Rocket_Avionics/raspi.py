@@ -94,8 +94,9 @@ def readPacket(address):
     	b = ''.join(chr(i) for i in ByteArray)
     	f = struct.unpack('f',b)
     	data_arr.append(f)
+    	print data
 
-    return f 
+    return -1
 
 """
 	Write data to file (not to i2c). 
