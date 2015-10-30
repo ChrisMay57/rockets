@@ -76,19 +76,19 @@ def scan_i2c():
 	return connected_i2c 
 
 def readPacket(address):
-    data2 = []
+    data = []
     length = int(mybus.read_byte(address));
     print 'length of data: ' + str(length)
     for ii in xrange(length):
     	try: 
         	k = mybus.read_byte(address)
-		data2.append(k)
+		data.append(k)
        	except: 
        		break
     
     data_arr = []
     for jj in xrange(5):
-    	ByteArray = data2[jj*4:(jj+1)*4]
+    	ByteArray = data[jj*4:(jj+1)*4]
     	b = ''.join(chr(i) for i in ByteArray)
     	f = struct.unpack('f',b)
     	data_arr.append(f)
