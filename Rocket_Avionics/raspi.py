@@ -88,15 +88,18 @@ def readPacket(address):
        	except: 
        		return data 
     
+    data_arr = []
     for jj in xrange(5):
     	ByteArray = data2[jj*4:(jj+1)*4]
     	b = ''.join(chr(i) for i in ByteArray)
-    	print struct.unpack('f',b)
+    	f = struct.unpack('f',b)
+    	print f
+    	data_arr.append(f)
 
     #print data
     #print b
     #print data2
-    return data 
+    return f 
 
 """
 	Write data to file (not to i2c). 
@@ -108,12 +111,10 @@ def writeData(log, data):
 	log.write("\n")
 
 # ping rate for data
-pingRate = 50 
+rescan_rate = 10
 
 if __name__ == "__main__":
-	devices = scan_i2c() 
-	# pi2c = I2C(arduinos)
-	# print pi2c
+	devices = scan_i2c()
 
 	# loop infinitely to get data
 	f = open('log.txt', 'r+')
@@ -127,15 +128,14 @@ if __name__ == "__main__":
 		while(True):
 			data_count = data_count + 1
 			# loop through each arduino
-			if(data_count % 10 == 0): 
+			if(data_count % rescan_rate == 0): 
 				devices = scan_i2c() # rescan at end of 10 cycles
 									  # put them into test mode 
-
     
 			for item in devices: 
 				# which arduino are we looking for 
 				try: 
-					print 'reading to %s' % (item)
+					print 'reading to [%s]' % (item)
 					log.write("Reading from Arduino on port: %i \n" % (item))
 					dataBack = readPacket(item)
 					log.write(dataBack + "\n")
@@ -143,13 +143,3 @@ if __name__ == "__main__":
 					devices = scan_i2c()  # lost an arduino = rescan
 				# sleep a bit 
 				time.sleep(0.5)
-			# sleep a bit
-			#time.sleep(2)
-
-
-	# with open(filename, "a") as log:
-	# 	while logData:
-	# 		for item in pi2c: 
-	# 			currentData = pi2c.gatherData()
-	# 			writeData(log, currentData)
-	# 		time.sleep(pingRate / 1000) # 50 milliseconds
