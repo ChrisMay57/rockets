@@ -138,6 +138,7 @@ if __name__ == "__main__":
 						data_line += data_back[ii] + ","
 
 					data_line += "\n"
+					print data_line
 					log.write(data_line)
 				except:
 					print 'fail'
