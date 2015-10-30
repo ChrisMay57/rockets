@@ -132,7 +132,7 @@ if __name__ == "__main__":
 					print 'reading to [%s]' % (item)
 					log.write("Reading from Arduino on port: %i \n" % (item))
 					data_back = readPacket(item)
-					print data_back
+					print data_back, len(data_back)
 					for thing in data_back: 
 						print 'hi', thing
 						log.write(thing)
