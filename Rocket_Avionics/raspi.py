@@ -86,17 +86,16 @@ def readPacket(address):
 		data += str(k)+ ' / ';
 		data2.append(k)
        	except: 
-       		break  
+       		return data 
     
     data_arr = []
-    # here, we convert the bytes back into a float
     for jj in xrange(5):
     	ByteArray = data2[jj*4:(jj+1)*4]
     	b = ''.join(chr(i) for i in ByteArray)
     	f = struct.unpack('f',b)
-    	s = str(f)[1:-2]
-    	data_arr.append(float(s)
-    return data
+    	data_arr.append(f)
+
+    return f 
 
 """
 	Write data to file (not to i2c). 
