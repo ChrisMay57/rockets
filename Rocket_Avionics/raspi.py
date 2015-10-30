@@ -69,7 +69,7 @@ def readPacket(address):
     	ByteArray = data2[jj*4:(jj+1)*4]
     	b = ''.join(chr(i) for i in ByteArray)
     	data_arr.append(struct.unpack('f',b))
-
+    print data_arr
     return data_arr
 
 """
