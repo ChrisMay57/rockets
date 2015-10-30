@@ -93,9 +93,8 @@ def readPacket(address):
     	f = struct.unpack('f',b)
     	s = float(str(f)[1:-2])
     	data_arr.append(s)
-    	print f, data_arr
 
-    return -1
+    return data_arr
 
 """
 	Write data to file (not to i2c). 
