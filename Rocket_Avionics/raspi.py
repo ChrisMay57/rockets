@@ -67,11 +67,14 @@ def readPacket(address):
     data_arr = []
 
     for jj in xrange(5):
-    	ByteArray = data2[jj*4:(jj+1)*4]
-    	b = ''.join(chr(i) for i in ByteArray)
-    	data_arr.append(struct.unpack('f',b))
-    print data_arr
-    return data_arr
+     	ByteArray = data2[jj*4:(jj+1)*4]
+     	b = ''.join(chr(i) for i in ByteArray)
+     	print struct.unpack('f',b)
+ 
+     #print data
+     #print b
+     #print data2
+    return data 
 
 """
 	Communication constants. 
