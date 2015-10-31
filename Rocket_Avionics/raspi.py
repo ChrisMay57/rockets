@@ -88,6 +88,7 @@ rescan_rate = 10
 data_count = 0
 
 if __name__ == "__main__":
+	print 'start'
 	devices = scan_i2c()
 
 	# loop infinitely to get data
