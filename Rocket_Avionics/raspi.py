@@ -92,11 +92,11 @@ if __name__ == "__main__":
 	devices = scan_i2c()
 
 	# loop infinitely to get data
-	f = open('log.csv', 'r+')
+	f = open('log.txt', 'r+')
 	f.truncate()
 	f.close()
 
-	with open("log.csv", "a") as log:
+	with open("log.txt", "a") as log:
 		#log.write("**** BEGINNING OF FILE ****")
 		while(True):
 			data_count = data_count + 1
