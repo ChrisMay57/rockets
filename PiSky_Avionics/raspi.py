@@ -1,6 +1,7 @@
 import smbus
 import time
 import struct
+import csv
 
 filename = "log.txt"
 logData = True 
@@ -77,15 +78,23 @@ def readPacket(address):
 """
 	Write data to file (not to i2c). 
 """
-def writeData(log, data):
-	log.write("Arduino Data:")
-	for ii in xrange(len(data)): 
-		log.write(ii + ": " + data[ii])
-	log.write("\n")
+#def writeData(log, data):
+#	log.write("Arduino Data:")
+#	for ii in xrange(len(data)): 
+#		log.write(ii + ": " + data[ii])
+#	log.write("\n")
 
 # ping rate for data
 rescan_rate = 10
 data_count = 0
+
+def writeCSV(data,CSVfile):
+        writer = csv.writer(CSVfile)
+        writer.writerows(data)
+        
+        
+        
+
 
 if __name__ == "__main__":
 	print 'start'
@@ -95,8 +104,12 @@ if __name__ == "__main__":
 	f = open('log.txt', 'r+')
 	f.truncate()
 	f.close()
-
+	CSVfile = open('log.csv', 'r+')
+	CSVfile.truncate()
+	CSVfile.close()
+        
 	with open("log.txt", "a") as log:
+        with open("log.csv", "a") as CSVlog:
 		#log.write("**** BEGINNING OF FILE ****")
 		while(True):
 			data_count = data_count + 1
@@ -118,6 +131,7 @@ if __name__ == "__main__":
 
 					data_line += "\n"
 					log.write(data_line)
+					CSVlog.write(data_line)
 				except:
 					devices = scan_i2c()  # lost an arduino = rescan
 				# sleep a bit 

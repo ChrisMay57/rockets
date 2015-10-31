@@ -32,12 +32,12 @@ boolean loggerOn = false;
 
 
 // sample data
-int data[10]; 
+int data[21]; 
 unsigned int index1 = 0; 
 
 
 void setup() {
-  data[0] = 9;
+  data[0] = 20;
   pinMode(LED_BUILTIN,OUTPUT); // LED
   Serial.begin(9600); // start serial for output
   // Init i2c given address
@@ -73,7 +73,7 @@ float logTime = 0;
 
 void loop() {
   // delay(100); // temporary
-  for(int jj = 1 ; jj < 10 ; jj++) {
+  for(int jj = 1 ; jj < 21 ; jj++) {
   data[jj] = random(0,254);
   }
 }
