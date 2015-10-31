@@ -8,28 +8,6 @@ logData = True
 mybus = smbus.SMBus(1)
 
 """
-	Manages i2c communication with arduinos.  
-"""
-class I2C: 
-	def __init__(self, addresses):
-		self.addresses = addresses # sets Pi's arduino addresses to result of search 
-		return 
-
-	def writeData(self, value, address):
-		mybus.write_byte(address, value)
-		return -1
-	
-	def readData(self, address):
-		number = mybus.ead_byte(address)
-		return number
-
-	def gatherData(self): 
-		data = []
-		for add in addresses: 
-			data.append(readData(add))
-		return data # this is indexed by the Arduino 
-
-"""
 1 byte read write from: http://blog.oscarliang.net/raspberry-pi-arduino-connected-i2c/
 """
 def testAddress(address):
