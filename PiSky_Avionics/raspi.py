@@ -104,35 +104,36 @@ if __name__ == "__main__":
 	f = open('log.txt', 'r+')
 	f.truncate()
 	f.close()
-	CSVfile = open('log.csv', 'r+')
+	CSVfile = open('log.csv', 'w+')
 	CSVfile.truncate()
 	CSVfile.close()
         
 	with open("log.txt", "a") as log:
-        with open("log.csv", "a") as CSVlog:
-		#log.write("**** BEGINNING OF FILE ****")
-		while(True):
-			data_count = data_count + 1
-			# loop through each arduino
-			if(data_count % rescan_rate == 0): 
-				devices = scan_i2c() # rescan at end of 10 cycles
-									  # put them into test mode 
-    
-			for item in devices: 
-				# which arduino are we looking for 
-				try: 
-					print 'reading to [%s]' % (item)
-					log.write("Reading from Arduino on port: %i \n" % (item))
-					data_back = readPacket(item)
-					data_line = ""; 
-
-					for ii in xrange(len(data_back)):
-						data_line += str(data_back[ii]) + ","
-
-					data_line += "\n"
-					log.write(data_line)
-					CSVlog.write(data_line)
-				except:
-					devices = scan_i2c()  # lost an arduino = rescan
-				# sleep a bit 
-				time.sleep(0.5)
+	        with open("log.csv", "a") as CSVlog:
+			#log.write("**** BEGINNING OF FILE ****")
+			while(True):
+				data_count = data_count + 1
+				# loop through each arduino
+				if(data_count % rescan_rate == 0): 
+					devices = scan_i2c() # rescan at end of 10 cycles
+										  # put them into test mode 
+	    
+				for item in devices: 
+					# which arduino are we looking for 
+					try: 
+						print 'reading to [%s]' % (item)
+						log.write("Reading from Arduino on port: %i \n" % (item))
+						data_back = readPacket(item)
+						data_line = "%i," % (item)
+						 
+	
+						for ii in xrange(len(data_back)):
+							data_line += str(data_back[ii]) + ","
+	
+						data_line += "\n"
+						log.write(data_line)
+						CSVlog.write(data_line)
+					except:
+						devices = scan_i2c()  # lost an arduino = rescan
+					# sleep a bit 
+					time.sleep(0.5)
