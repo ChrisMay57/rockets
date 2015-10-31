@@ -10,5 +10,5 @@ cd pi
 cd Desktop
 cd Code
 cd rockets
-cd Rocket_Avionics
+cd PiSky_Avionics
 sudo python raspi.py
