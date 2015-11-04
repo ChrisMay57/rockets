@@ -85,7 +85,7 @@ def readPacket(address):
 #	log.write("\n")
 
 # ping rate for data
-rescan_rate = 10
+rescan_rate = 1000
 data_count = 0
 
 def writeCSV(data,CSVfile):
@@ -137,4 +137,4 @@ if __name__ == "__main__":
 					except:
 						devices = scan_i2c()  # lost an arduino = rescan
 					# sleep a bit 
-					time.sleep(0.5)
+					time.sleep(0.05)
