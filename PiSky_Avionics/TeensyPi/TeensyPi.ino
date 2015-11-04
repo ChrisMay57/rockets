@@ -151,7 +151,7 @@ void collectData() {
                                            bmp_event.pressure,
                                            temperature);
     Serial.print(F(" m; "));
-    u.fval = alt;
+    u.fval = bmp_event.pressure;
     for (int ii = 0; ii < 4; ii++ ){
       sensorData[ii+13] = u.b[ii];
     }
@@ -167,7 +167,7 @@ void collectData() {
   }
   sensorData[0] = 20;
   Serial.println(F(""));
-  delay(1000);
+  delay(1);
 
 
   return;
