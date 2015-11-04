@@ -58,6 +58,7 @@ def readPacket(address):
     data = []
     length = int(mybus.read_byte(address));
     print 'length of data: ' + str(length)
+    print 'time: ' + time.time()
     for ii in xrange(length):
     	try: 
         	k = mybus.read_byte(address)
