@@ -58,7 +58,6 @@ def readPacket(address):
     data = []
     length = int(mybus.read_byte(address));
     print 'length of data: ' + str(length)
-    print 'time: ' + time.time()
     for ii in xrange(length):
     	try: 
         	k = mybus.read_byte(address)
@@ -99,6 +98,7 @@ def writeCSV(data,CSVfile):
 
 if __name__ == "__main__":
 	print 'start'
+	Start_Time  = time.time()
 	devices = scan_i2c()
 
 	# loop infinitely to get data
@@ -126,11 +126,11 @@ if __name__ == "__main__":
 						log.write("Reading from Arduino on port: %i \n" % (item))
 						data_back = readPacket(item)
 						data_line = "%i," % (item)
-						 
-	
+						data_line += str(time.time() - Start_Time) + ","
+						
 						for ii in xrange(len(data_back)):
 							data_line += str(data_back[ii]) + ","
-	
+						
 						data_line += "\n"
 						log.write(data_line)
 						CSVlog.write(data_line)
