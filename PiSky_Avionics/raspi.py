@@ -4,9 +4,23 @@ import struct
 import csv
 import subprocess
 
-filename = "log.txt"
-logData = True 
+"""
+	SSI Rockets: Raspberry Pi based flight computer 
 
+	Finds all connected devices using i2c and logs data transmitted by sensors. 
+
+	Unimplemented features: 
+		* CAN bus (instead of i2c) 
+
+	Revision history: 
+		* 11/4/15: continuous logging, print statements in cronlog (not txt file)
+		* 11/5/15: 
+
+	Known bugs: 
+		* Put bugs here 
+"""
+
+logData = True 
 mybus = smbus.SMBus(1)
 
 """
@@ -29,7 +43,6 @@ def testAddress(address):
 """
 def writeNumber(value, address):
 	mybus.write_byte(address, value)
-	# bus.write_byte_data(address, 0, value)
 	return 
 
 """
@@ -37,7 +50,6 @@ def writeNumber(value, address):
 """
 def readNumber(address):
 	number = mybus.read_byte(address)
-	# number = bus.read_byte_data(address, 1)
 	return number
 
 """
@@ -50,11 +62,14 @@ def scan_i2c():
 		if(testAddress(jj)): 
 			connected_i2c.append(jj)
 
-	print "connected i2c:"
+	print "Connected i2c Ports:"
 	print connected_i2c
 
 	return connected_i2c 
 
+"""
+	Read an array of bytes and convert into a floating point number. 
+"""
 def readPacket(address):
     data = []
     length = int(mybus.read_byte(address));
@@ -67,6 +82,7 @@ def readPacket(address):
        		break
     
     data_arr = []
+    # join incoming data from separate bytes 
     for jj in xrange(5):
     	ByteArray = data[jj*4:(jj+1)*4]
     	b = ''.join(chr(i) for i in ByteArray)
@@ -76,72 +92,61 @@ def readPacket(address):
 
     return data_arr
 
-"""
-	Write data to file (not to i2c). 
-"""
-#def writeData(log, data):
-#	log.write("Arduino Data:")
-#	for ii in xrange(len(data)): 
-#		log.write(ii + ": " + data[ii])
-#	log.write("\n")
 
-# ping rate for data
+# data ping rate
 rescan_rate = 1000
 data_count = 0
 
+"""
+	Write to CSV file. 
+"""
 def writeCSV(data,CSVfile):
         writer = csv.writer(CSVfile)
         writer.writerows(data)
         
-        
-        
-
-
 if __name__ == "__main__":
-	print 'start'
-	Start_Time  = time.time()
-	devices = scan_i2c()
+	print 'I2C logger startup'
+
+	start_time  = time.time()
+	devices = scan_i2c() # gather the inital connected devices 
 
 	# loop infinitely to get data
-	#f = open('log.txt', 'r+')
-	#f.truncate()
-	#f.close()
 	CSVfile = open('log.csv', 'w+')
 	CSVfile.truncate() #wipes file every time script is run
 	CSVfile.close()
         
-	with open("log.txt", "a") as log:
-		#with open("log.csv", "a") as CSVlog:
-		
-		log.write("**** BEGINNING OF FILE ****")
-		
-		CSVlog = open('log.csv', 'a+')
+	with open("log.csv", "a+") as CSVlog:
 		subprocess.call('gnuplot', '-p','graphrealtime.sh')
 		
 		while(True):
 			data_count += 1
 			# loop through each arduino
 			if(data_count % rescan_rate == 0): 
-				devices = scan_i2c() # rescan at end of 10 cycles
-									 # put them into test mode 
-				CSVlog.close() #close for plotting
-				subprocess.call('gnuplot', 'graphpng.sh') #replot png file every cycle
-				CSVlog = open('log.csv', 'a+')	#reopen for appending data
+				try: 
+					CSVlog.close() # close for plotting 
+					subprocess.call('gnuplot', 'graphpng.sh') # replot png file 
+					CSVlog = open('log.csv', 'a+')	# reopen for appending data
+
+					devices = scan_i2c() # rescan at end of 10 cycles
+									 	# put them into test mode 
+				except: 
+					print 'Device scanning failure' # goes to cronlog 
+
 
 				for item in devices: 
 					# which arduino are we looking for 
 					try: 
 						print 'reading to [%s]' % (item)
-						log.write("Reading from Arduino on port: %i \n" % (item))
+						# this was for txt 
+						print "Reading from Arduino on port: %i \n" % (item)
 						data_back = readPacket(item)
 						data_line = "%i," % (item)
-						data_line += str(time.time() - Start_Time) + ","
+						data_line += str(time.time() - start_time) + ","
 				
 						for ii in xrange(len(data_back)):
 							data_line += str(data_back[ii]) + ","
 				
 						data_line += "\n"
-						log.write(data_line)
 						CSVlog.write(data_line)
 					except:
 						devices = scan_i2c()  # lost an arduino = rescan
