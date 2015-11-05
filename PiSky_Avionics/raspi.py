@@ -116,7 +116,8 @@ if __name__ == "__main__":
 	CSVfile.close()
         
 	#with open("log.csv", "a+") as CSVlog:
-		#subprocess.call('gnuplot', '-p','graphrealtime.sh')
+	
+	subprocess.call("gnuplot -p graphrealtime.sh", shell=True) #run script for liveplot in X11
 		
 	while(True):
 		CSVlog = open('log.csv', 'a+')
