@@ -112,10 +112,10 @@ if __name__ == "__main__":
 
 	# loop infinitely to get data
 	CSVfile = open('log.csv', 'w+')
-	CSVfile.truncate() #wipes file every time script is run
+	CSVfile.truncate() # wipes file every time script is run
 	CSVfile.close()
         
-	with open("log.csv", "a+") as CSVlog, open("logfile.txt", "a+" as log):
+	with open("log.csv", "a+") as CSVlog, open("logfile.txt", "a+") as log:
 		subprocess.call('gnuplot', '-p','graphrealtime.sh')
 		
 		while(True):
@@ -138,7 +138,6 @@ if __name__ == "__main__":
 					# which arduino are we looking for 
 					try: 
 						# print 'reading to [%s]' % (item)
-						# log.write('Reading to [%s]' % (item))
 						# this was for txt 
 						print "Reading from Arduino on port: %i \n" % (item)
 						log.write("Reading from Arduino on port: %i \n" % (item))
