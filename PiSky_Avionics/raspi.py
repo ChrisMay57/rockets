@@ -115,7 +115,7 @@ if __name__ == "__main__":
 	CSVfile.truncate() #wipes file every time script is run
 	CSVfile.close()
         
-	with open("log.csv", "a+") as CSVlog:
+	with open("log.csv", "a+") as CSVlog, open("logfile.txt", "a+" as log):
 		subprocess.call('gnuplot', '-p','graphrealtime.sh')
 		
 		while(True):
@@ -131,14 +131,17 @@ if __name__ == "__main__":
 									 	# put them into test mode 
 				except: 
 					print 'Device scanning failure' # goes to cronlog 
+					log.write("Device scanning failure.")
 
 
 				for item in devices: 
 					# which arduino are we looking for 
 					try: 
-						print 'reading to [%s]' % (item)
+						# print 'reading to [%s]' % (item)
+						# log.write('Reading to [%s]' % (item))
 						# this was for txt 
 						print "Reading from Arduino on port: %i \n" % (item)
+						log.write("Reading from Arduino on port: %i \n" % (item))
 						data_back = readPacket(item)
 						data_line = "%i," % (item)
 						data_line += str(time.time() - start_time) + ","
@@ -150,5 +153,6 @@ if __name__ == "__main__":
 						CSVlog.write(data_line)
 					except:
 						devices = scan_i2c()  # lost an arduino = rescan
+						log.write("Rescanning for i2c devices.")
 					# sleep a bit 
 					time.sleep(0.05)
