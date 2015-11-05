@@ -125,14 +125,14 @@ if __name__ == "__main__":
 				try: 
 					CSVlog.close() # close for plotting 
 					subprocess.call('gnuplot', 'graphpng.sh') # replot png file 
-					CSVlog = open('log.csv', 'a+')	# reopen for appending data
 
 					devices = scan_i2c() # rescan at end of 10 cycles
 									 	# put them into test mode 
 				except: 
 					print 'Device scanning failure' # goes to cronlog 
 					log.write("Device scanning failure.")
-
+					
+				CSVlog = open('log.csv', 'a+')	# reopen for appending data
 
 				for item in devices: 
 					# which arduino are we looking for 
