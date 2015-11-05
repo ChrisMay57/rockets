@@ -2,6 +2,7 @@ import smbus
 import time
 import struct
 import csv
+import subprocess
 
 filename = "log.txt"
 logData = True 
@@ -102,23 +103,31 @@ if __name__ == "__main__":
 	devices = scan_i2c()
 
 	# loop infinitely to get data
-	f = open('log.txt', 'r+')
-	f.truncate()
-	f.close()
+	#f = open('log.txt', 'r+')
+	#f.truncate()
+	#f.close()
 	CSVfile = open('log.csv', 'w+')
-	CSVfile.truncate()
+	CSVfile.truncate() #wipes file every time script is run
 	CSVfile.close()
         
 	with open("log.txt", "a") as log:
-	        with open("log.csv", "a") as CSVlog:
-			#log.write("**** BEGINNING OF FILE ****")
-			while(True):
-				data_count = data_count + 1
-				# loop through each arduino
-				if(data_count % rescan_rate == 0): 
-					devices = scan_i2c() # rescan at end of 10 cycles
-										  # put them into test mode 
-	    
+		#with open("log.csv", "a") as CSVlog:
+		
+		log.write("**** BEGINNING OF FILE ****")
+		
+		CSVlog = open('log.csv', 'a+')
+		subprocess.call('gnuplot', '-p','graphrealtime.sh')
+		
+		while(True):
+			data_count += 1
+			# loop through each arduino
+			if(data_count % rescan_rate == 0): 
+				devices = scan_i2c() # rescan at end of 10 cycles
+									 # put them into test mode 
+				CSVlog.close() #close for plotting
+				subprocess.call('gnuplot', 'graphpng.sh') #replot png file every cycle
+				CSVlog = open('log.csv', 'a+')	#reopen for appending data
+
 				for item in devices: 
 					# which arduino are we looking for 
 					try: 
@@ -127,10 +136,10 @@ if __name__ == "__main__":
 						data_back = readPacket(item)
 						data_line = "%i," % (item)
 						data_line += str(time.time() - Start_Time) + ","
-						
+				
 						for ii in xrange(len(data_back)):
 							data_line += str(data_back[ii]) + ","
-						
+				
 						data_line += "\n"
 						log.write(data_line)
 						CSVlog.write(data_line)
