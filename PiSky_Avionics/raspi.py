@@ -31,7 +31,7 @@ def testAddress(address):
 		writeNumber(1, address) 
 	except: 
 		return False 
-	#time.sleep(1)
+	time.sleep(1)
 	number = readNumber(address)
 
 	if number == 1: 
@@ -57,8 +57,8 @@ def readNumber(address):
 """	
 def scan_i2c():
 	connected_i2c = [] 
-	#cur_address = 0
-	for jj in xrange(0, 10): 
+	cur_address = 0
+	for jj in xrange(0, 120): 
 		if(testAddress(jj)): 
 			connected_i2c.append(jj)
 
@@ -116,6 +116,7 @@ if __name__ == "__main__":
 	CSVfile.close()
         
 <<<<<<< HEAD
+<<<<<<< HEAD
 	with open("log.csv", "a+") as CSVlog, open("logfile.txt", "a+") as log:
 		subprocess.call('gnuplot', '-p','graphrealtime.sh')
 		
@@ -159,17 +160,28 @@ if __name__ == "__main__":
 =======
 	#with open("log.csv", "a+") as CSVlog:
 		#subprocess.call('gnuplot', '-p','graphrealtime.sh')
+=======
+	with open("log.csv", "a+") as CSVlog, open("logfile.txt", "a+") as log:
+>>>>>>> master
 		
-	while(True):
-		CSVlog = open('log.csv', 'a+')
-		data_count += 1
-		# loop through each arduino
-		if(data_count % rescan_rate == 0): 
-			try: 
-				CSVlog.close() # close for plotting 
-				subprocess.call(['gnuplot', 'graphpng.sh']) # replot png file 
+		
+		while(True):
+			data_count += 1
+			# loop through each arduino
+			if(data_count % rescan_rate == 0): 
+				try: 
+					CSVlog.close() # close for plotting 
+					subprocess.call(['gnuplot', 'graphpng.sh']) # replot png file
+
+					devices = scan_i2c() # rescan at end of 10 cycles
+									 	# put them into test mode 
+				except: 
+					print 'Device scanning failure' # goes to cronlog 
+					log.write("Device scanning failure.")
+					
 				CSVlog = open('log.csv', 'a+')	# reopen for appending data
 
+<<<<<<< HEAD
 				devices = scan_i2c() # rescan at end of 10 cycles
 								 	# put them into test mode 
 			except: 
@@ -196,4 +208,28 @@ if __name__ == "__main__":
 				devices = scan_i2c()  # lost an arduino = rescan
 			# sleep a bit 
 			time.sleep(0.05)
+>>>>>>> master
+=======
+			for item in devices: 
+				# which arduino are we looking for 
+				try: 
+					# print 'reading to [%s]' % (item)
+					# this was for txt 
+					print "Reading from Arduino on port: %i \n" % (item)
+					log.write("Reading from Arduino on port: %i \n" % (item))
+					data_back = readPacket(item)
+					data_line = "%i," % (item)
+					print str(time.time() - start_time)
+					data_line += str(time.time() - start_time) + ","
+			
+					for ii in xrange(len(data_back)):
+						data_line += str(data_back[ii]) + ","
+				
+					data_line += "\n"
+					CSVlog.write(data_line)
+				except:
+					devices = scan_i2c()  # lost an arduino = rescan
+					log.write("Rescanning for i2c devices.")
+				# sleep a bit 
+				time.sleep(0.05)
 >>>>>>> master
