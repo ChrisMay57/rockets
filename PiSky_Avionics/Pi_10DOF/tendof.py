@@ -35,19 +35,19 @@ class Unified_Sensor:
 		BMP pressure. 
 	"""
 	def get_pressure(self):
-		return self.bmp.read_pressure()
+		return self.bmp.readPressure()
 
 	"""
 		BMP temperature. 
 	"""
 	def get_temperature(self):
-		return self.bmp.read_temperature()
+		return self.bmp.readTemperature()
 
 	"""
 		BMP altitude. 
 	"""
 	def get_altitude(self):
-		return self.bmp.read_altitude()
+		return self.bmp.readAltitude()
 
 	"""
 		L3GD20 xyz change. 
