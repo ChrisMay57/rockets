@@ -12,14 +12,14 @@ class Unified_Sensor:
 		Initialize all sensors via i2c.  
 	"""
 	def __init__(self): 
-		self.L3GD20 = L3GD20(busId = 1, slaveAddr = 0x6b, ifLog = False, ifWriteBlock=False)
-		self.L3GD20.Set_PowerMode("Normal")
-		self.L3GD20.Set_FullScale_Value("250dps")
-		self.L3GD20.Set_AxisX_Enabled(True)
-		self.L3GD20.Set_AxisY_Enabled(True)
-		self.L3GD20.Set_AxisZ_Enabled(True)
-		self.L3GD20.Init()
-		self.L3GD20.Calibrate()
+		self.L3GD20_s = L3GD20(busId = 1, slaveAddr = 0x6b, ifLog = False, ifWriteBlock=False)
+		self.L3GD20_s.Set_PowerMode("Normal")
+		self.L3GD20_s.Set_FullScale_Value("250dps")
+		self.L3GD20_s.Set_AxisX_Enabled(True)
+		self.L3GD20_s.Set_AxisY_Enabled(True)
+		self.L3GD20_s.Set_AxisZ_Enabled(True)
+		self.L3GD20_s.Init()
+		self.L3GD20_s.Calibrate()
 
 		self.bmp = Adafruit_BMP085.BMP085()
 		self.lsm = Adafruit_LSM303()
