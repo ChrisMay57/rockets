@@ -1,3 +1,5 @@
+from tendof import *
+
 S = Unified_Sensor()
 while(True):
 	time.sleep(0.1)
