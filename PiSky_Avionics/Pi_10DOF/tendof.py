@@ -1,5 +1,5 @@
 from L3GD20 import L3GD20
-from Adafruit_BMP085 import BMP085
+from Adafruit_BMP085 import Adafruit_BMP085
 from Adafruit_LSM303 import Adafruit_LSM303
 import smbus
 import time
@@ -21,7 +21,7 @@ class Unified_Sensor:
 		self.L3GD20.Init()
 		self.L3GD20.Calibrate()
 
-		self.bmp = BMP085.BMP085()
+		self.bmp = Adafruit_BMP085.BMP085()
 		self.lsm = Adafruit_LSM303()
 
 		# for sensing roll rate
