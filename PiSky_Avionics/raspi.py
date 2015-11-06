@@ -31,7 +31,7 @@ def testAddress(address):
 		writeNumber(1, address) 
 	except: 
 		return False 
-	time.sleep(1)
+	#time.sleep(1)
 	number = readNumber(address)
 
 	if number == 1: 
@@ -57,8 +57,8 @@ def readNumber(address):
 """	
 def scan_i2c():
 	connected_i2c = [] 
-	cur_address = 0
-	for jj in xrange(0, 120): 
+	#cur_address = 0
+	for jj in xrange(0, 10): 
 		if(testAddress(jj)): 
 			connected_i2c.append(jj)
 
@@ -115,6 +115,7 @@ if __name__ == "__main__":
 	CSVfile.truncate() # wipes file every time script is run
 	CSVfile.close()
         
+<<<<<<< HEAD
 	with open("log.csv", "a+") as CSVlog, open("logfile.txt", "a+") as log:
 		subprocess.call('gnuplot', '-p','graphrealtime.sh')
 		
@@ -155,3 +156,44 @@ if __name__ == "__main__":
 						log.write("Rescanning for i2c devices.")
 					# sleep a bit 
 					time.sleep(0.05)
+=======
+	#with open("log.csv", "a+") as CSVlog:
+		#subprocess.call('gnuplot', '-p','graphrealtime.sh')
+		
+	while(True):
+		CSVlog = open('log.csv', 'a+')
+		data_count += 1
+		# loop through each arduino
+		if(data_count % rescan_rate == 0): 
+			try: 
+				CSVlog.close() # close for plotting 
+				subprocess.call(['gnuplot', 'graphpng.sh']) # replot png file 
+				CSVlog = open('log.csv', 'a+')	# reopen for appending data
+
+				devices = scan_i2c() # rescan at end of 10 cycles
+								 	# put them into test mode 
+			except: 
+				print 'Device scanning failure' # goes to cronlog 
+
+
+		for item in devices: 
+			# which arduino are we looking for 
+			try: 
+				print 'reading to [%s]' % (item)
+				# this was for txt 
+				print "Reading from Arduino on port: %i \n" % (item)
+				data_back = readPacket(item)
+				data_line = "%i," % (item)
+				print str(time.time() - start_time)
+				data_line += str(time.time() - start_time) + ","
+		
+				for ii in xrange(len(data_back)):
+					data_line += str(data_back[ii]) + ","
+		
+				data_line += "\n"
+				CSVlog.write(data_line)
+			except:
+				devices = scan_i2c()  # lost an arduino = rescan
+			# sleep a bit 
+			time.sleep(0.05)
+>>>>>>> master
