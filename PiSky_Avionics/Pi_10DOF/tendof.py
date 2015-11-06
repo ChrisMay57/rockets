@@ -22,7 +22,7 @@ class Unified_Sensor:
 		self.L3GD20_s.Calibrate()
 
 		self.bmp = Adafruit_BMP085.BMP085()
-		self.lsm = Adafruit_LSM303()
+		self.lsm = Adafruit_LSM303.Adafruit_LSM303()
 
 		# for sensing roll rate
 		self.start_time = time.time()
