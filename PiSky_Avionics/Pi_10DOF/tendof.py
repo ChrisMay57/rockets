@@ -1,4 +1,4 @@
-from L3GD20 import *
+from L3GD20 import L3GD20
 from Adafruit_BMP085 import Adafruit_BMP085
 from Adafruit_LSM303 import Adafruit_LSM303
 import smbus
