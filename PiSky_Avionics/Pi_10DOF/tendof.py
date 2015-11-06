@@ -74,4 +74,4 @@ class Unified_Sensor:
 S = Unified_Sensor()
 while(True):
 	time.sleep(0.1)
-	print S.getPressure()
+	print S.get_pressure()
