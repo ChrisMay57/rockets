@@ -57,9 +57,9 @@ class Unified_Sensor:
 		time.sleep(self.dt) # sleep a bit so we can get the difference in xyz
 		xyz_2 = self.L3GD20_s.Get_CalOut_Value() 
 
-		self.x += (dxyz_2[0] - dxyz_1[0])*dt;
-		self.y += (dxyz_2[1] - dxyz_1[1])*dt;
-		self.z += (dxyz_2[2] - dxyz_1[2])*dt;
+		self.x += (xyz_2[0] - xyz_1[0])*dt;
+		self.y += (xyz_2[1] - xyz_1[1])*dt;
+		self.z += (xyz_2[2] - xyz_1[2])*dt;
 		return (self.x, self.y, self.z)
 
 	"""
