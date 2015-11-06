@@ -70,8 +70,3 @@ class Unified_Sensor:
 
 	def __repr__(self):
 		return "I am a unified sensor. "
-
-S = Unified_Sensor()
-while(True):
-	time.sleep(0.1)
-	print S.get_pressure()
