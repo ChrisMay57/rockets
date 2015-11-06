@@ -53,9 +53,9 @@ class Unified_Sensor:
 		L3GD20 xyz change. 
 	"""
 	def get_xyz(self):
-		xyz_1 = s.Get_CalOut_Value()
+		xyz_1 = self.L3GD20_s.Get_CalOut_Value()
 		time.sleep(self.dt) # sleep a bit so we can get the difference in xyz
-		xyz_2 = s.Get_CalOut_Value() 
+		xyz_2 = self.L3GD20_s.Get_CalOut_Value() 
 
 		self.x += (dxyz_2[0] - dxyz_1[0])*dt;
 		self.y += (dxyz_2[1] - dxyz_1[1])*dt;
