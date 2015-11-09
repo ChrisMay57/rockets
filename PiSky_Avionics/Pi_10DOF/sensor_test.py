@@ -13,5 +13,5 @@ if __name__ == "__main__":
 			data_line += xyz[1:-1] + "," + temp + "," + lsm
 			data_line += "\n"
 			print data_line 
-			# CSVlog.write(data_line) 
+			# CSVlog.write(data_line) # write to csv 
 			# implement above line after testing 
