@@ -1,4 +1,5 @@
 from tendof import * 
+import subprocess
 import csv
 
 S = Unified_Sensor()
