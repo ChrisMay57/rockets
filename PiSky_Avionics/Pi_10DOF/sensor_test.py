@@ -11,7 +11,7 @@ if __name__ == "__main__":
 			temp = S.get_temperature()
 			lsm = S.get_lsm()
 			data_line = ""
-			data_line += xyz[1:-1] + "," + temp + "," + lsm
+			data_line += str(xyz[1:-1]) + "," + str(temp) + "," + str(lsm)
 			data_line += "\n"
 			print data_line
 
