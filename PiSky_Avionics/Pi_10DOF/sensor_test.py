@@ -12,6 +12,10 @@ if __name__ == "__main__":
 			lsm = S.get_lsm()
 			data_line += xyz[1:-1] + "," + temp + "," + lsm
 			data_line += "\n"
-			print data_line 
+			print data_line
+
+			CSVlog.close() # close for plotting 
+			subprocess.call('gnuplot', 'graphpng.sh') # replot png file 
+			CSVlog = open('log.csv', 'a+')	# reopen for appending data 
 			# CSVlog.write(data_line) # write to csv 
 			# implement above line after testing 
