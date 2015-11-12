@@ -22,7 +22,7 @@ if __name__ == "__main__":
 			print data_line
 
 			CSVlog.close() # close for plotting 
-			subprocess.call('gnuplot','graphrealtime.sh') 
+			subprocess.call('gnuplot','graphpng.sh') 
 			CSVlog = open('log.csv', 'a+')	# reopen for appending data 
 			# CSVlog.write(data_line) # write to csv 
 			# implement above line after testing 
