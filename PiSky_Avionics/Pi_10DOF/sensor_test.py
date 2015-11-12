@@ -8,7 +8,7 @@ if __name__ == "__main__":
 	CSVfile = open('log.csv', 'w+')
 	CSVfile.truncate() # wipes file every time script is run
 	CSVfile.close()
-	
+
 	with open("log.csv", "a+") as CSVlog: 
 		while(True):
 			time.sleep(0.1)
@@ -17,7 +17,7 @@ if __name__ == "__main__":
 			pressure = S.get_pressure()
 			lsm = S.get_lsm()
 			data_line = ""
-			data_line += str(xyz[1:-1]) + "," + str(temp) + "," + str(pressure) + "," + str(lsm)
+			data_line += "7, " + str(xyz[2:-2]) + "," + str(temp) + "," + str(pressure) + "," + str(lsm)[1:-1]
 			data_line += "\n"
 			print data_line
 
