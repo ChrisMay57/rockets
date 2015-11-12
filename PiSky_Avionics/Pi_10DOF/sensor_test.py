@@ -10,6 +10,7 @@ if __name__ == "__main__":
 			xyz = S.get_xyz()
 			temp = S.get_temperature()
 			lsm = S.get_lsm()
+			data_line = ""
 			data_line += xyz[1:-1] + "," + temp + "," + lsm
 			data_line += "\n"
 			print data_line
