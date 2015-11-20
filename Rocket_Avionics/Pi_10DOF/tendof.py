@@ -68,7 +68,7 @@ class Unified_Sensor:
 
 	def get_mag(self): 
 		lsm = get_lsm()
-		return lsm[1]
+		return lsm[1] 
 
 	"""
 		TODO: the LSM data needs to be parsed. 
