@@ -63,11 +63,11 @@ class Unified_Sensor:
 		return (self.x, self.y, self.z)
 
 	def get_acc(self): 
-		lsm = get_lsm()
+		lsm = self.get_lsm()
 		return lsm[0]
 
 	def get_mag(self): 
-		lsm = get_lsm()
+		lsm = self.get_lsm()
 		return lsm[1] 
 
 	"""
