@@ -62,6 +62,14 @@ class Unified_Sensor:
 		self.z += (xyz_2[2] - xyz_1[2])*self.dt;
 		return (self.x, self.y, self.z)
 
+	def get_acc(self): 
+		lsm = get_lsm()
+		return lsm[0]
+
+	def get_mag(self): 
+		lsm = get_lsm()
+		return lsm[1]
+
 	"""
 		TODO: the LSM data needs to be parsed. 
 	"""
