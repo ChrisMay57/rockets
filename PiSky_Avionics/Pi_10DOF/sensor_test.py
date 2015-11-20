@@ -17,9 +17,10 @@ if __name__ == "__main__":
 			pressure = S.get_pressure()
 			lsm = S.get_lsm()
 			data_line = ""
-			data_line += "7, " + str(xyz)[1:-1] + ", " + str(temp) + ", " + str(pressure) + "," + str(lsm).replace("(","").replace(")","")[1:-1	]
+			data_line += "7, " + str(xyz)[1:-1] + ", " + str(temp) + ", " + str(pressure) + "," + str(lsm).replace("(","").replace(")","")[1:-1]
 			data_line += "\n"
-			print data_line
+			# print data_line
+			print lsm
 
 			# CSVlog.close() # close for plotting 
 			# subprocess.call('gnuplot','graphpng.sh') 
