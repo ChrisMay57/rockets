@@ -1,9 +1,8 @@
 # SSI Rockets Software Repository 
 
-# Lighning IMU Logger
+# DataLogging
   
-  Inertial measurement unit logging software for the Developed for the 
-  Stanford Space Initiative Tier 3 rocket team, "Lightning" rocket program. 
+  Inertial measurement unit logging software for microcontrollers. 
   Prints pitch, roll, heading, distributed temperatures, and light 
   environment to serial and a local SD card. Built on libraries and examples 
   provided by Adafruit.  
@@ -11,8 +10,23 @@
   Hardware, troubleshooting, and links to library downloads available in 
   the program header
 
-# Arduino SD Card Logger
+# PiSky Client 
 
-  Simple starter code intended for use by other Stanford Student Space 
-  Initiative project teams. Provides template for datalogging projects
-  using an Arduino UNO and Adafruit SD data logger shield.
+  For use on Teensy 3.1+ microcontrollers. Contains FlexCan library for communicating
+  with Pi over CAN. Standardized methods for requesting inertial data & reporting 
+  status coming soon. 
+  
+# PiSky Master
+
+  For use on Raspberry Pi. Contains code for logging/graphing inertial data via I^2C.
+  Automatically executed after the Pi boots. Sensor voting and CAN distribution 
+  coming soon. 
+  
+# Simulation 
+ 
+  --
+  
+# Camera 
+
+  Script for taking video/images on Pi
+  
