@@ -15,7 +15,7 @@
 import math
 
 # Open output file
-f = open('mydata.dat', 'w')
+f = open('DataFiles/mydata.dat', 'w')
 
 # Loop
 for degrees in range(720):
