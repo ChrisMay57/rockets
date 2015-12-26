@@ -1,5 +1,23 @@
+#include <SD.h>
+#include <SPI.h>
 #include <Stepper.h>
+#include <i2c_t3.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_LSM303_U.h>
+#include <Adafruit_BMP085_U.h>
+#include <Adafruit_L3GD20_U.h>
+#include <Adafruit_10DOF.h>
 #define button_pin 10
+
+/* SD Init info */
+//File myFile;
+//const int chipSelect = 4; // depends on how you wire the SD card
+
+/* Assign a unique ID to the sensors */
+Adafruit_10DOF                dof   = Adafruit_10DOF();
+Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(30301);
+Adafruit_LSM303_Mag_Unified   mag   = Adafruit_LSM303_Mag_Unified(30302);
+Adafruit_BMP085_Unified       bmp   = Adafruit_BMP085_Unified(18001);
 
 /*
  *  Basic parafoil breaking test.
@@ -26,9 +44,15 @@ void setup() {
   pinMode(button_pin, INPUT);
   pinMode(13, OUTPUT);
 
-  // set stepper speed 
+  // set stepper speed
   m1.setSpeed(stepper_speed);
   m2.setSpeed(stepper_speed);
+
+  initSensors(); // default library; in next tab
+
+  // SD for teensy
+  // pinMode(10, OUTPUT);
+  //  myFile = SD.open("test.txt", FILE_WRITE);
 }
 
 // Break only once
@@ -49,15 +73,16 @@ void loop() {
       digitalWrite(13, LOW);
       delay(250);
     }
-    // sets LED to high for 1 second, then moves motors 
-    digitalWrite(13, HIGH); 
+    // sets LED to high for 1 second, then moves motors
+    digitalWrite(13, HIGH);
     delay(final_delay); // 1 second
-    // step each at the same time for the number of times desired 
+    // step each at the same time for the number of times desired
     for (int ii = 0; ii < int(stepsPerRevolution * pull_revs); ii ++) {
       m1.step(1);
       m2.step(1);
+      // myFile.println(String(millis()) + "; " ); // print 10dof stuff
     }
-    moveMotors = false; 
+    moveMotors = false;
   } else {
     digitalWrite(13, LOW);
   }
