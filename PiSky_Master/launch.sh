@@ -10,5 +10,5 @@ cd pi
 cd Desktop
 cd Code
 cd rockets
-cd PiSky_Avionics
-sudo python raspi.py
+cd PiSky_Master
+sudo python master.py
