@@ -2,13 +2,13 @@
 #include <SPI.h>
 #include <Stepper.h>
 #include <i2c_t3.h>
+#include <EEPROM.h>
+#include "EEPROMAnything.h"
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM303_U.h>
 #include <Adafruit_BMP085_U.h>
 #include <Adafruit_L3GD20_U.h>
 #include <Adafruit_10DOF.h>
-#include <EEPROM.h>
-#include "EEPROMAnything.h"
 #define button_pin 23
 
 /* SD Init info */
@@ -24,6 +24,7 @@ Adafruit_BMP085_Unified       bmp   = Adafruit_BMP085_Unified(18001);
 /*
  *  Basic parafoil breaking test.
  *  December 2015
+ *  Authors: Andrew Milich and John Dean
  */
 
 const int stepsPerRevolution = 2048;
@@ -32,6 +33,9 @@ double pull_revs = 0.3;
 int stepper_speed = 40;
 int num_blinks = 10; // # of times to blink
 int final_delay = 1000; // final delay before moving motors
+unsigned long flight_start_time;
+unsigned long most_recent_log = 0;
+short int log_number;
 
 Stepper m1(stepsPerRevolution, 0, 2, 1, 3);
 Stepper m2(stepsPerRevolution, 4, 6, 5, 7);
@@ -43,9 +47,7 @@ Stepper m2(stepsPerRevolution, 4, 6, 5, 7);
 // Set button pin, LED pin to output/
 void setup() {
   Serial.begin(9600);
-  //while (!Serial) {
-  //  ; // wait for serial port to connect. Needed for Leonardo only
-  //}
+  delay(1000);
   Serial.println("System initializing");
   // put your setup code here, to run once:
   pinMode(button_pin, INPUT);
@@ -55,7 +57,7 @@ void setup() {
   m1.setSpeed(stepper_speed);
   m2.setSpeed(stepper_speed);
 
-  //initSensors(); // default library; in next tab
+  initSensors(); // default library; in next tab
 
   // SD for teensy
   // pinMode(10, OUTPUT);
@@ -63,16 +65,17 @@ void setup() {
 }
 
 // Break only once
-boolean moveMotors = true;
 
+boolean flight_begin = false;
+boolean break_complete = false;
 // Loop until button press
 void loop() {
   // put your main code here, to run repeatedly:
-  while (digitalRead(button_pin) == button_not_pressed_state) {
-    delayMicroseconds(1);
+  if(!flight_begin){
     digitalWrite(13, HIGH);
   }
-  if (moveMotors) {
+  if (flight_begin){
+    log_number = 0;
     // waits for button push, then blinks 10 times in 5 seconds
     for (int ii = 0; ii < num_blinks; ii ++) {
       digitalWrite(13, HIGH);
@@ -80,20 +83,47 @@ void loop() {
       digitalWrite(13, LOW);
       delay(250);
     }
-    // sets LED to high for 1 second, then moves motors
     digitalWrite(13, HIGH);
-    delay(final_delay); // 1 second
-    // step each at the same time for the number of times desired
-    Serial.println("Turning motors now");
-    for (int ii = 0; ii < int(stepsPerRevolution * pull_revs); ii ++) {
-      m1.step(-5);
-      m2.step(5);
-      // myFile.println(String(millis()) + "; " ); // print 10dof stuff
+    flight_start_time = millis();
+    Serial.println(F("Flight Starting Now"));
+    while(flightTime() < 10000){
+      logRoll();
+      if(flightTime() > 1000 && !break_complete){
+        Serial.println(F("Turning motors now"));
+        for (int ii = 0; ii < int(stepsPerRevolution * pull_revs); ii ++) {
+          //m1.step(-5);
+          //m2.step(5);
+          logRoll();
+        }
+        Serial.println(F("Done turning motors"));
+        steppersOff();
+        break_complete = true;
+      }
     }
-    steppersOff();
-    moveMotors = false;
-  } else {
-    digitalWrite(13, LOW);
+    EEPROM_writeAnything(0,log_number);
+    Serial.println(F("Flight complete"));
+    Serial.print(F("Number of roll entries logged:"));
+    Serial.print(log_number);
+    Serial.println(F(""));
+    flight_begin = false;
+  }
+  if(digitalRead(button_pin) == HIGH) {
+  flight_begin = true;
+  break_complete = false;
+  }
+  if (Serial.available()) {
+    Serial.println(F("Printing data from previous flight"));
+    delay(500);
+    short num_entries;
+    EEPROM_readAnything(0, num_entries);
+    Serial.print(num_entries);
+    Serial.println(F(" entries were stored last flight"));
+    for (int ii = 0; ii < num_entries; ii ++) {
+      short currentData;
+      EEPROM_readAnything(ii * 2, currentData);
+      Serial.println(currentData); 
+    }
+    Serial.read();
   }
 }
 
@@ -107,5 +137,10 @@ void steppersOff(){
   m1.setSpeed(stepper_speed);
   m2.setSpeed(stepper_speed);
 }
+
+long unsigned int flightTime(){
+  return millis() - flight_start_time;
+}
+
 
 
