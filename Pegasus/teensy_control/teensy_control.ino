@@ -31,7 +31,7 @@ SoftwareSerial XBee(9, 10); // RX, TX
 const int stepsPerRevolution = 2048;
 boolean button_not_pressed_state = LOW;
 double pull_revs = 0.3;
-int stepper_speed = 40;
+int stepper_speed = 15;
 int num_blinks = 10; // # of times to blink
 int final_delay = 1000; // final delay before moving motors
 unsigned long flight_start_time;
@@ -94,9 +94,10 @@ void loop() {
       }
     }
     XBee.write("\nFlight start.\n");
-    while (true) {
+    long sTime = millis(); 
+    while (millis() < sTime + 10000) {
       if (XBee.available()) {
-        int num = 30; 
+        int num = 16; 
         char cmd = XBee.read();
         if (cmd == 'w') {
           //XBee.write("left turn \n");
@@ -104,15 +105,15 @@ void loop() {
         } else if (cmd == 's') {
           m1.step(-1*num);
         } else if (cmd == 'r') {
-          m2.step(num);
-        } else if (cmd == 'f') {
           m2.step(-num);
+        } else if (cmd == 'f') {
+          m2.step(num);
         } else if (cmd == 'e') {
           m1.step(num);
-          m2.step(num);
+          m2.step(-num);
         } else if (cmd == 'd') {
           m1.step(-num);
-          m2.step(-num);
+          m2.step(num);
         }
       }
     }
