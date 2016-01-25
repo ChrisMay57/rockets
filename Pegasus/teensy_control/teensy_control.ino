@@ -20,7 +20,7 @@
 //Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(30301);
 //Adafruit_LSM303_Mag_Unified   mag   = Adafruit_LSM303_Mag_Unified(30302);
 //Adafruit_BMP085_Unified       bmp   = Adafruit_BMP085_Unified(18001);
-SoftwareSerial XBee(9, 10); // RX, TX
+SoftwareSerial XBee(9, 8); // RX, TX
 
 /*
  *  Basic parafoil breaking test.
