@@ -1,14 +1,10 @@
-# edit /etc/rc.local to ~/Desktop/Code/Rocket_Avionics/launch.sh
-# put this file there
+# edit /etc/rc.local to ~/Desktop/launch.sh
 
 #!/bin/sh
-sleep 10
+# launcher.sh
+#
 
-cd /
-cd home
-cd pi
-cd Desktop
-cd Code
-cd rockets
-cd PiSky_Master
-sudo python master.py
+/bin/sleep 100
+echo sleep finished, system has booted
+# path to the main executable
+/usr/bin/python /home/pi/Desktop/Kythera/KytheraMain.py
