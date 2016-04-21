@@ -31,6 +31,15 @@ body {
   color: #CC2233 !important;
 }
 
+.time{
+  font-size: .6em;
+}
+
+.space{
+  margin-top: 1.5%;
+  display: inline-block;
+}
+
 .navbar-top-links {
     margin-right: 0;
 }

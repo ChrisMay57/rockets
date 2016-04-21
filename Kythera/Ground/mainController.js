@@ -20,7 +20,7 @@ var app = angular.module('kytheraApp', ['ngRoute',
                 controller: 'rawDownlinkController'
             }).
             otherwise({
-                redirectTo: '/#/login-register'
+                redirectTo: '/login-register'
             });
 
     });
@@ -59,14 +59,15 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         $scope.main.project = "Kythera Ground Station";
         $scope.main.message = "Please Login"
         $scope.main.session = {};
+        
         $scope.main.here = false;
         $scope.main.num_online = 0;
         $scope.main.stages = 24;
         $scope.main.currentStage = 0;
         $scope.main.errorCount = 0;
+        $scope.main.rocketeers = "Rocketers";
 
         $scope.main.downlinkStream = [];
-
 
         /* Directives contain
          * - profile photo
@@ -76,12 +77,14 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         $scope.main.messages = [];
 
         var adding = {};
-        adding["source"] = "/images/kythera.jpg";
+        adding["source"] = "/images/kythera.png";
         adding["name"] = "Kythera";
-        adding["message"] = "her its kythera";
+        adding["message"] = "Hey, I'm Kythera! I'm pretty chatty so I'll be asking you some questions before flight :D";
+        adding["time"] = new Date();
 
         $scope.main.messages.push(adding);
 
+        console.log($scope.main.messages);
 
         $scope.main.progress = $scope.main.currentStage + "/" + $scope.main.stages;
 
@@ -95,31 +98,25 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         });
 
         socket.on('from:kythera', function(message){
-            console.log(message);
+            console.log("FROM KYTHERA: " + message);
+
+            $scope.main.num_online = message.num_online;
 
             // add the message to our model locally
             $scope.main.messages.push({
-              source:"/images/kythera.jpg",
+              source:"/images/kythera.png",
               name: "Kythera",
-              message: message
+              message: message.data,
+              time: message.time
             });
         });
 
-        $scope.main.sendMessage = function(){
-          console.log(this.text);
-          socket.emit('from:controller', {
-            message: this.text
-          });
-
-          // add the message to our model locally
-          $scope.main.messages.push({
-            source:"/images/human.png",
-            name: "Controller",
-            message: this.text
-          });
-
-          document.getElementById("chatting").reset();
-        }
+        $scope.main.send = function(toSend){
+            socket.emit('from:controller', {
+              message: toSend
+            });
+            console.log("FROM USER: " + toSend);
+        };
 
         /*
          * FetchModel - Fetch a model from the web server.
@@ -201,8 +198,8 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         months[11] = "December";
 
         /* constructs the date in a more readable form returns it as a string */
-        $scope.main.cs142FormatTime = function(passed){
-          var d = new Date(passed);
+        $scope.main.formatTime = function(passed){
+          var d = passed;
           var day = weekday[d.getDay()];
           var month = months[d.getMonth()];
           var date = d.getDate().toString();

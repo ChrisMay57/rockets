@@ -4,7 +4,7 @@
 
         <link href="./node_modules/lightbox2/src/css/lightbox.css" rel="stylesheet">
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-        <title>Kythera Ground Station</title>
+        <title>Stanford Rockets MC</title>
 
         <link href="./node_modules/angular-material/angular-material.css" rel="stylesheet" />
 
@@ -74,11 +74,21 @@
                       <span class="icon-bar"></span>
                       <span class="icon-bar"></span>
                   </button>
-                  <a class="navbar-brand cardinal" href="#/launchFlow">Stanford Houston</a>
+                  <a class="navbar-brand cardinal" href="#/launchFlow">Stanford Rockets MC  🚀</a>
               </div>
               <!-- /.navbar-header -->
 
+
+
               <ul class="nav navbar-top-links navbar-right">
+                 <li>
+                   <div button type="button" disabled ng-show="0"class="btn btn-success space">
+                      <i class="fa fa-bullseyefa-fw"></i> Signal Aquired</div>
+                 </li>
+                 <li>
+                   <div button type="button" disabled ng-show="1" class="btn btn-danger space">
+                     <i class="fa fa-bug fa-fw"></i> Loss of Signal</div>
+                 </li>
                   <!-- /.dropdown -->
                   <li class="dropdown">
                       <a class="dropdown-toggle" data-toggle="dropdown" href="#/login-register">
@@ -97,7 +107,7 @@
                               <a href="#/launchFlow"><i class="fa fa-dashboard fa-fw"></i> Launch Flow</a>
                           </li>
                           <li>
-                              <a href="#/rawDownlink"><i class="fa fa-files-o fa-fw"></i> Raw Downlink</a>
+                              <a href="#/rawDownlink"><i class="fa fa-signal fa-fw"></i> Raw Downlink</a>
                           </li>
                       </ul>
                   </div>
@@ -105,6 +115,8 @@
               </div>
               <!-- /.navbar-static-side -->
           </nav>
+
+
 
           <div id="page-wrapper">
 
