@@ -72,14 +72,20 @@ def handle_data(data):
     currentIndex = currentIndex+1
 
 def read_from_port(ser):
+    logFile.write('\nHi from input thread\n')
     while not connected:
         connected = True
 
         while True:
+           logFile.write('\nNew line from input\n')
            reading = ser.readline()
+           logFile.write('\n' + reading)
            handle_data(reading)
 
 def beginInput():
-    Ithread = threading.Thread(target=read_from_port, args=(serial_port,))
+    logFile.write('\nOpening input thread\n')
+    Ithread = threading.Thread(target=read_from_port, args=(ser))
+    logFile.write('\nInput thread open\n')
     Ithread.start()
+    logFile.write('\nInput thread started\n')
     return Ithread
