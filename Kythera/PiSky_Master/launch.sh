@@ -7,4 +7,4 @@
 /bin/sleep 100
 echo sleep finished, system has booted
 # path to the main executable
-/usr/bin/python /home/pi/Desktop/PiSky_Master/KytheraMain.py
+/usr/bin/python /home/pi/Desktop/PiSky_Master/Kythera_Main.py
