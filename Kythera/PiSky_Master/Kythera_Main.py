@@ -25,13 +25,20 @@ The flight computer software occupies 4 major modes:
 """
 
 # IMPORTS
+import smbus
+import time
+import struct
+import csv
+import subprocess
 
 
 # INIT GLOBALS
 
 
-# INIT XBEE
 
+# INIT XBEE
+import datalink
+Ithread = datalink.beginInput()
 
 # INIT SENSORS
 
@@ -43,7 +50,7 @@ The flight computer software occupies 4 major modes:
 
 
 # testing
-
+datalink.runTest()
 
 # FLIGHT
 

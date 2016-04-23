@@ -13,7 +13,7 @@ ser.write('%s\n' % string)
 
 sawyer_file = open('tomsawyerChapter1.txt', 'r')
 ser.write('successfully opened tom sawyer text\n')
-
+ 
 ser.write('\n\nsend me an \'t\' to get 100 bytes, \'s\' to get first chapter of tomsawyer, \'q\' to quit \n')
 
 while True:

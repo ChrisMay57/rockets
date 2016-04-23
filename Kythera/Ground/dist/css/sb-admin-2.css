@@ -31,6 +31,20 @@ body {
   color: #CC2233 !important;
 }
 
+.time{
+  font-size: .6em;
+}
+
+.space{
+  margin-top: 1.5%;
+  display: inline-block;
+}
+
+.max{
+  max-height: 30% !important;
+  overflow: scroll !important;
+}
+
 .navbar-top-links {
     margin-right: 0;
 }
@@ -211,7 +225,7 @@ body {
 
 .chat-panel .panel-body {
     height: 350px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .login-panel {

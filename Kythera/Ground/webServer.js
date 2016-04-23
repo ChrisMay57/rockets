@@ -4,28 +4,22 @@
 
 // THIS CODE JUST LETS US FORMAT DATES NICE CAN BE IGNORED
 
-// Helps us make some pretty dates
 var w = new Array(7); w[0]=  "Sunday"; w[1] = "Monday"; w[2] = "Tuesday";
 w[3] = "Wednesday"; w[4] = "Thursday"; w[5] = "Friday"; w[6] = "Saturday";
-
 var m = new Array(12); m[0]=  "January"; m[1] = "February"; m[2] = "March";
 m[3] = "April"; m[4] = "May"; m[5] = "June"; m[6] = "July"; m[7] = "August";
 m[8] = "September"; m[9] = "October"; m[10] = "November"; m[11] = "December";
-
-/* constructs the date in a more readable form returns it as a string */
 var time = function(){
   var d = new Date(); var day = w[d.getDay()]; var month = m[d.getMonth()];
   var date = d.getDate().toString(); var year = d.getFullYear().toString();
   var time; var minute = (d.getMinutes()<10)?"0"+d.getMinutes().toString():d.getMinutes().toString();
   var hour = d.getHours();
   if(hour < 13){
-    if (hour === 0){ time = "12" + ":" + minute + " AM";
-    } else{ time = (hour < 10)? "0" + hour.toString() + ":" + minute + " am" : hour.toString() + ":" + minute + " am";
-    }
+    if (hour === 0){ time = "12" + ":" + minute + " AM";}
+    else{ time = (hour < 10)? "0" + hour.toString() + ":" + minute + " am" : hour.toString() + ":" + minute + " am";}
   } else{ hour -= 12;
     time = (hour < 10)? "0" + hour.toString() + ":" + minute + " pm" : hour.toString() + ":" + minute + " pm";
-  }
-  return day + ", " + month + " " + date + ", " + year + " " + "at "  + time;
+  } return day + ", " + month + " " + date + ", " + year + " " + "at "  + time;
 };
 
 // OK BACK TO ACTUAL STUFF
@@ -96,6 +90,7 @@ var server = app.listen(3000, '0.0.0.0', function () {
     log.write('Listening at http://localhost:' + port + ' exporting the directory ' + __dirname + ' ...\n')
 });
 var socketServer = io(server);
+var socket_ids = [];
 
 // Let's set up the serial port now
 var serialport = require('serialport');// include the library
@@ -121,7 +116,8 @@ myPort.on('open', showPortOpen);
 // What to do when our connection opens
 function openSocket(socket){
 	// this function runs if there's input from the client:
-	socketServer.on('from:controller', function(data) {
+	socket.on('from:controller', function(data) {
+    console.log("GOT SOMETHING");
 		myPort.write(data);							// send the data to the serial device
     log.write("SENDING at " + time() + "\n")
     log.write(data + "\n\n");
@@ -129,25 +125,32 @@ function openSocket(socket){
 
 	// this function runs if there's input from the serialport:
 	myPort.on('data', function(data) {
-		socketServer.emit('from:kythera', data);		// send the data to the client
-    log.write("RECIEVED at " + time() + "\n")
+    var toSend = {};
+    toSend["num_online"] = socket_ids.length;
+    toSend["data"] = data;
+    toSend["time"] = new Date();
+		socket.emit('from:kythera', toSend);		// send the data to the client
+    log.write("RECIEVED at " + toSend["time"] + "\n");
     log.write(data + "\n\n");
 	});
 }
 
-var num_online = 1;
-
 socketServer.on('connection', function(socket){
-  console.log('A user connected');
-  num_online = num_online + 1;
-  log.write('A user connected ... \n');
-  openSocket();
-});
 
-socketServer.on('disconnect', function(){
-   console.log('user disconnected');
-   num_online = num_online -1;
-   log.write('A user connected ... \n');
+  console.log('A user connected with '+socket.id);
+  if(socket_ids.indexOf(socket.id) < 0){
+    socket_ids.push(socket.id);
+    log.write('\nA user connected ... \n');
+  }
+
+  socket.on('disconnect', function(){
+     console.log('user disconnected with ' + socket.id );
+     socket_ids.splice(socket_ids.indexOf(socket.id), 1);
+     console.log(socket_ids);
+     log.write('\nA user disconnected ... \n');
+  });
+  openSocket(socket);
+
 });
 
 myPort.on('error', showError);
@@ -175,9 +178,6 @@ function showError(error) {
   * Use GET to let client side access the session status
   */
   app.get('/online', function (request, response) {
-      console.log("SERVING up: " + num_online);
-      var visitors = {};
-      visitors["on"] = num_online;
-      console.log(visitors);
-      response.status(200).send(JSON.stringify(num_online));
+      console.log("SERVING up: " + socket_ids.length);
+      response.status(200).send(JSON.stringify(socket_ids.length));
   });

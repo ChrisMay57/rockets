@@ -3,7 +3,8 @@
 var app = angular.module('kytheraApp', ['ngRoute',
     'ngMaterial',
     'ngResource',
-    'btford.socket-io'
+    'btford.socket-io',
+    'angular-flot'
   ]).
   config(function ($routeProvider) {
         $routeProvider.
@@ -20,11 +21,12 @@ var app = angular.module('kytheraApp', ['ngRoute',
                 controller: 'rawDownlinkController'
             }).
             otherwise({
-                redirectTo: '/#/login-register'
+                redirectTo: '/login-register'
             });
 
     });
 
+// SET UP THE SOCKETS
 app.factory('socket', function ($rootScope) {
   var socket = io.connect();
   return {
@@ -59,29 +61,33 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         $scope.main.project = "Kythera Ground Station";
         $scope.main.message = "Please Login"
         $scope.main.session = {};
+
         $scope.main.here = false;
         $scope.main.num_online = 0;
         $scope.main.stages = 24;
         $scope.main.currentStage = 0;
         $scope.main.errorCount = 0;
-
+        $scope.main.rocketeers = "Rocketers";
         $scope.main.downlinkStream = [];
 
+        $scope.main.accelY = [ [[0, 1], [1, 5], [2, 2], [3, 2]] ];
+        $scope.main.myChartOptions = {};
 
         /* Directives contain
          * - profile photo
+         * - profile name
          * - time
          * - message
          */
         $scope.main.messages = [];
 
         var adding = {};
-        adding["source"] = "/images/kythera.jpg";
+        adding["source"] = "/images/kythera.png";
         adding["name"] = "Kythera";
-        adding["message"] = "her its kythera";
+        adding["message"] = "Hey, I'm Kythera! I'm pretty chatty so I'll be asking you some questions before flight :D";
+        adding["time"] = new Date();
 
         $scope.main.messages.push(adding);
-
 
         $scope.main.progress = $scope.main.currentStage + "/" + $scope.main.stages;
 
@@ -94,32 +100,42 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
             console.log("client connected");
         });
 
+        var most_recent = new Date();
         socket.on('from:kythera', function(message){
-            console.log(message);
+            console.log("FROM KYTHERA: " + message);
+            most_recent = message.time;
+
+            $scope.main.num_online = message.num_online;
 
             // add the message to our model locally
             $scope.main.messages.push({
-              source:"/images/kythera.jpg",
+              source:"/images/kythera.png",
               name: "Kythera",
-              message: message
+              message: message.data,
+              time: message.time
             });
         });
 
-        $scope.main.sendMessage = function(){
-          console.log(this.text);
-          socket.emit('from:controller', {
-            message: this.text
-          });
+        $scope.main.healthy = false;
 
-          // add the message to our model locally
-          $scope.main.messages.push({
-            source:"/images/human.png",
-            name: "Controller",
-            message: this.text
-          });
+        setInterval(function(){
+            $scope.$apply( function(){
+                var right_now = new Date();
+                var seconds = (right_now.getTime() - most_recent.getTime())/1000;
+                if(seconds > 10){
+                  $scope.main.healthy = false;
+                } else{
+                  $scope.main.healthy = true;
+                }
+            });
+        }, 3000);
 
-          document.getElementById("chatting").reset();
-        }
+        $scope.main.send = function(toSend){
+            socket.emit('from:controller', {
+              message: toSend
+            });
+            console.log("FROM USER: " + toSend);
+        };
 
         /*
          * FetchModel - Fetch a model from the web server.
@@ -201,8 +217,8 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         months[11] = "December";
 
         /* constructs the date in a more readable form returns it as a string */
-        $scope.main.cs142FormatTime = function(passed){
-          var d = new Date(passed);
+        $scope.main.formatTime = function(passed){
+          var d = passed;
           var day = weekday[d.getDay()];
           var month = months[d.getMonth()];
           var date = d.getDate().toString();
