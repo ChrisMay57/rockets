@@ -33,12 +33,15 @@ import subprocess
 
 
 # INIT GLOBALS
-
+kytheraLog = open('./logs/KytheraLog.txt', 'a')
+kytheraLog.write('\n\nSTARTING NEW SESSION\n')
 
 
 # INIT XBEE
 import datalink
+kytheraLog.write('\nimport success \n')
 Ithread = datalink.beginInput()
+kytheraLog.write('\input started success \n')
 
 # INIT SENSORS
 
@@ -51,6 +54,7 @@ Ithread = datalink.beginInput()
 
 # testing
 datalink.runTest()
+kytheraLog.write('\ntest complete success \n')
 
 # FLIGHT
 
