@@ -63,10 +63,10 @@
                     </div>
                 </div>
             </div>
-            <a href="#">
+            <a href="javascript:void(0);" ng-click="updateOnline();">
                 <div class="panel-footer">
-                    <span class="pull-left">View Details</span>
-                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <span class="pull-left">Refresh</span>
+                    <span class="pull-right"><i class="fa fa-refresh"></i></span>
                     <div class="clearfix"></div>
                 </div>
             </a>
@@ -106,7 +106,9 @@
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <div class="flot-chart">
-                    <div class="flot-chart-content" id="flot-line-chart"></div>
+                    <!--div class="flot-chart-content" id="flot-line-chart"></div-->
+                    <!--div chart='main.accelY'> </div-->
+                    <flot dataset="main.accelY" options="main.myChartOptions"></flot>
                 </div>
             </div>
             <!-- /.panel-body -->
@@ -178,7 +180,7 @@
 <div class="row" ng-show={{main.permission}}>
     <!-- /.panel -->
     <div class="col-lg-12" >
-      <div class="panel panel-default">
+      <div class="chat-panel panel panel-default">
         <div class="panel-heading">
             <i class="fa fa-comments fa-fw"></i>
             Chat with Kythera
@@ -213,5 +215,14 @@
         </div>
       </div>
       <!-- /.panel-footer -->
+
+      <!-- Flot Charts JavaScript -->
+      <script src="../bower_components/flot/excanvas.min.js"></script>
+      <script src="../bower_components/flot/jquery.flot.js"></script>
+      <script src="../bower_components/flot/jquery.flot.pie.js"></script>
+      <script src="../bower_components/flot/jquery.flot.resize.js"></script>
+      <script src="../bower_components/flot/jquery.flot.time.js"></script>
+      <script src="../bower_components/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
+      <script src="../js/flot-data.js"></script>
 </div>
 <!-- /.panel .chat-panel -->

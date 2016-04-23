@@ -3,7 +3,8 @@
 var app = angular.module('kytheraApp', ['ngRoute',
     'ngMaterial',
     'ngResource',
-    'btford.socket-io'
+    'btford.socket-io',
+    'angular-flot'
   ]).
   config(function ($routeProvider) {
         $routeProvider.
@@ -25,6 +26,7 @@ var app = angular.module('kytheraApp', ['ngRoute',
 
     });
 
+// SET UP THE SOCKETS
 app.factory('socket', function ($rootScope) {
   var socket = io.connect();
   return {
@@ -59,18 +61,21 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         $scope.main.project = "Kythera Ground Station";
         $scope.main.message = "Please Login"
         $scope.main.session = {};
-        
+
         $scope.main.here = false;
         $scope.main.num_online = 0;
         $scope.main.stages = 24;
         $scope.main.currentStage = 0;
         $scope.main.errorCount = 0;
         $scope.main.rocketeers = "Rocketers";
-
         $scope.main.downlinkStream = [];
+
+        $scope.main.accelY = [ [[0, 1], [1, 5], [2, 2], [3, 2]] ];
+        $scope.main.myChartOptions = {};
 
         /* Directives contain
          * - profile photo
+         * - profile name
          * - time
          * - message
          */
@@ -84,8 +89,6 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
 
         $scope.main.messages.push(adding);
 
-        console.log($scope.main.messages);
-
         $scope.main.progress = $scope.main.currentStage + "/" + $scope.main.stages;
 
         /*socket.on('send:message', function (message) {
@@ -97,8 +100,10 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
             console.log("client connected");
         });
 
+        var most_recent = new Date();
         socket.on('from:kythera', function(message){
             console.log("FROM KYTHERA: " + message);
+            most_recent = message.time;
 
             $scope.main.num_online = message.num_online;
 
@@ -110,6 +115,20 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
               time: message.time
             });
         });
+
+        $scope.main.healthy = false;
+
+        setInterval(function(){
+            $scope.$apply( function(){
+                var right_now = new Date();
+                var seconds = (right_now.getTime() - most_recent.getTime())/1000;
+                if(seconds > 10){
+                  $scope.main.healthy = false;
+                } else{
+                  $scope.main.healthy = true;
+                }
+            });
+        }, 3000);
 
         $scope.main.send = function(toSend){
             socket.emit('from:controller', {

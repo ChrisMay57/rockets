@@ -29,11 +29,38 @@ app.controller('launchFlowController', ['$scope', '$rootScope', '$location', '$r
         });
 
         document.getElementById("chatting").reset();
-      }
+      };
 
-      //make available to all sub controllers
       $scope.main.num_online = $scope.main.FetchModel("/online", $scope.onlineCallback);
 
-      console.log($scope.main.messages);
+      //make available to all sub controllers
+      $scope.updateOnline = function(){
+        $scope.main.num_online = $scope.main.FetchModel("/online", $scope.onlineCallback);
+      };
 
+      // LETS DO SOME GRAPHS
 }]);
+
+/*app.directive('chart', function(){
+    return{
+        restrict: 'A',
+        link: function(scope, elem, attrs){
+
+            var chart = null,
+                opts  = { };
+
+            var data = scope[attrs.ngModel];
+
+            scope.$watch(attrs.chart, function(v){
+                if(!chart){
+                    chart = $.plot(elem, v , opts);
+                    elem.show();
+                }else{
+                    chart.setData(v);
+                    chart.setupGrid();
+                    chart.draw();
+                }
+            });
+        }
+    };
+});*/

@@ -2,7 +2,7 @@ import smbus
 import time
 import struct
 import csv
-import subprocess
+import subprocess 
 
 """
 	SSI Rockets: Raspberry Pi based flight computer
