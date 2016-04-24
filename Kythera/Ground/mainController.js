@@ -102,8 +102,9 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
 
         var most_recent = new Date();
         socket.on('from:kythera', function(message){
+            message = JSON.parse(message);
             console.log("FROM KYTHERA: " + message);
-            most_recent = message.time;
+            most_recent = new Date(message.time);
 
             $scope.main.num_online = message.num_online;
 
@@ -112,7 +113,7 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
               source:"/images/kythera.png",
               name: "Kythera",
               message: message.data,
-              time: message.time
+              time: most_recent
             });
         });
 
@@ -227,6 +228,7 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
 
           /* include leading 0 to minutes below 10 */
           var minute = (d.getMinutes() < 10) ? "0" + d.getMinutes().toString() : d.getMinutes().toString();
+          var seconds = (d.getSeconds() < 10) ? "0"+ d.getSeconds().toString() : d.getSeconds().toString();
 
           /* distinguish between AM and PM */
           var hour = d.getHours();
@@ -237,12 +239,12 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
             }
             /* all other times under 10am require a leading 0 */
             else{
-              time = (hour < 10)? "0" + hour.toString() + ":" + minute + " am" : hour.toString() + ":" + minute + " am";
+              time = (hour < 10)? "0" + hour.toString() + ":" + minute + ":" + seconds +" am" : hour.toString() + ":" + minute + ":" + seconds + " am";
             }
           } else{
             /* pm times must be in 12 hour format and times under 10 must have a leading 0*/
             hour -= 12;
-            time = (hour < 10)? "0" + hour.toString() + ":" + minute + " pm" : hour.toString() + ":" + minute + " pm";
+            time = (hour < 10)? "0" + hour.toString() + ":" + minute + ":" + seconds +" pm" : hour.toString() + ":" + minute + ":" + seconds + " pm";
           }
 
           /* return the formatted stirng */

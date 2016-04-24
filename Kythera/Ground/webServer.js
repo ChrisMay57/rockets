@@ -95,8 +95,8 @@ var socket_ids = [];
 // Let's set up the serial port now
 var serialport = require('serialport');// include the library
 var SerialPort = serialport.SerialPort; // make a local instance of it
-   // get port name from the command line:
-var portName = '/dev/tty-usbserial1';
+// get port name from the command line with ls /dev/tty.*
+var portName = '/dev/tty.usbserial-DN00OK9Z';
 
 var myPort = new SerialPort(portName, {
    baudRate: 19200,
@@ -129,8 +129,8 @@ function openSocket(socket){
     toSend["num_online"] = socket_ids.length;
     toSend["data"] = data;
     toSend["time"] = new Date();
-		socket.emit('from:kythera', toSend);		// send the data to the client
-    log.write("RECIEVED at " + toSend["time"] + "\n");
+		socket.emit('from:kythera', JSON.stringify(toSend));		// send the data to the client
+    log.write("RECEIVED at " + toSend["time"] + "\n");
     log.write(data + "\n\n");
 	});
 }

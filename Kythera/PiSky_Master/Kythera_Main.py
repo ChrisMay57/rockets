@@ -25,7 +25,7 @@ The flight computer software occupies 4 major modes:
 """
 
 # IMPORTS
-import smbus
+#import smbus
 import time
 import struct
 import csv
@@ -33,14 +33,14 @@ import subprocess
 
 
 # INIT GLOBALS
-kytheraLog = open('./logs/KytheraLog.txt', 'a')
+kytheraLog = open('logs/KytheraLog.txt', 'a')
 kytheraLog.write('\n\nSTARTING NEW SESSION\n')
 
 
 # INIT XBEE
 import datalink
 kytheraLog.write('\nimport success \n')
-Ithread = datalink.beginInput()
+#Ithread = datalink.beginInput()
 kytheraLog.write('\input started success \n')
 
 # INIT SENSORS
@@ -57,8 +57,3 @@ datalink.runTest()
 kytheraLog.write('\ntest complete success \n')
 
 # FLIGHT
-
-
-
-if __name__ == '__main__' :
-    # run everything required
