@@ -18,7 +18,11 @@ from datetime import datetime
 import time
 import threading
 
-ser = serial.Serial('/dev/ttyUSB0', 19200)
+# UNCOMMENT FOR PI
+#ser = serial.Serial('/dev/ttyUSB0', 19200)
+# UNCOMMENT FOR MAC -- run ls /dev/tty.* to view your connected serial
+#                      devices
+ser = serial.Serial('/dev/tty.usbserial-A1011FUN', 19200)
 Kythera_TestData = './testing/Kythera_messages.txt'
 logFile = open('./logs/RadioLog.txt', 'a')
 logFile.write('\n\nSTARTING NEW SESSION\n')
@@ -57,12 +61,12 @@ def KythMessage(flightStatus, heading, yaw, pitch, ax, ay, az, atm, temp, tplus)
 Run a test output with simulated Kythera data
 """
 def runTest():
-    testFile = open('./logs/RadioLog.txt', 'r')
+    testFile = open(Kythera_TestData, 'r')
     while True:
         line = testFile.readline()
         if line == '':
             break
-        line.replace(" ", "")
+        line = "".join(line.split()) + "\n"
         ser.write(line)
         logFile.write("TEST SENDING\n"+datetime.now().time().isoformat()+"\n"+line+"\n")
         time.sleep(4)
