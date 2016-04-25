@@ -30,6 +30,12 @@ import time
 import struct
 import csv
 import subprocess
+import signal
+import os
+import sys
+import time
+import threading
+from multiprocessing import Process
 
 
 # INIT GLOBALS
@@ -40,8 +46,19 @@ kytheraLog.write('\n\nSTARTING NEW SESSION\n')
 # INIT XBEE
 import datalink
 kytheraLog.write('\nimport success \n')
-#Ithread = datalink.beginInput()
+Ithread = datalink.beginInput()
+#inputId = Ithread.get_ident()
+#inputId = datalink.beginInput()
 kytheraLog.write('\input started success \n')
+
+"""def signal_handler(signal, frame):
+    print 'Gathering Threads'
+    os.kill(inputId, signal.SIGINT)
+    #Ithread.join()
+    print 'Threads gathered, exiting'
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)"""
 
 # INIT SENSORS
 
@@ -55,5 +72,8 @@ kytheraLog.write('\input started success \n')
 # testing
 datalink.runTest()
 kytheraLog.write('\ntest complete success \n')
+
+Ithread.join()
+print('\nInput thread finished\n')
 
 # FLIGHT

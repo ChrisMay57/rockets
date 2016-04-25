@@ -7,7 +7,7 @@
 <!-- /.row -->
 <div class="row">
     <ul class="panel panel-primary wide" ng-repeat="item in main.downlinkStream">
-      <li>{{item}}</li>
+      <li>SENT {{main.formatTime(item.time)}}: {{item.msg}}</li>
     </ul>
     <!-- /.panel panel-primary wide -->
 </div>

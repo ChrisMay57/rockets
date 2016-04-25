@@ -14,8 +14,11 @@ info_sum --> checksum of info to be examined on ground
 """
 
 import serial
+import sys
+import signal
 from datetime import datetime
 import time
+from multiprocessing import Process
 import threading
 
 # UNCOMMENT FOR PI
@@ -24,7 +27,7 @@ import threading
 #                      devices
 ser = serial.Serial('/dev/tty.usbserial-A1011FUN', 19200)
 Kythera_TestData = './testing/Kythera_messages.txt'
-logFile = open('./logs/RadioLog.txt', 'a')
+logFile = open('./logs/RadioLog.txt', 'w')
 logFile.write('\n\nSTARTING NEW SESSION\n')
 connected = False
 
@@ -66,7 +69,11 @@ def runTest():
         line = testFile.readline()
         if line == '':
             break
-        line = "".join(line.split()) + "\n"
+        print(line[3])
+        if (line[3] =='K') or (line[3] =="N"):
+            line = "".join(line.split())+ "\n"
+        else:
+            line = "".join(line[0:5].split()) + line[5:len(line)]
         ser.write(line)
         logFile.write("TEST SENDING\n"+datetime.now().time().isoformat()+"\n"+line+"\n")
         time.sleep(4)
@@ -74,22 +81,21 @@ def runTest():
 def handle_data(data):
     currentData.append(data)
     currentIndex = currentIndex+1
+    print("GOT DATA")
 
 def read_from_port(ser):
-    logFile.write('\nHi from input thread\n')
-    while not connected:
-        connected = True
-
-        while True:
-           logFile.write('\nNew line from input\n')
-           reading = ser.readline()
-           logFile.write('\n' + reading)
-           handle_data(reading)
+    print('\nHi from input thread')
+    while True:
+       print('New line from input')
+       reading = ser.readline()
+       print('\n' + reading)
+       handle_data(reading)
+       if(reading == "quit"):
+           break
 
 def beginInput():
     logFile.write('\nOpening input thread\n')
-    Ithread = threading.Thread(target=read_from_port, args=(ser))
+    Ithread = Process(target=read_from_port, args=(ser,))
     logFile.write('\nInput thread open\n')
     Ithread.start()
-    logFile.write('\nInput thread started\n')
     return Ithread
