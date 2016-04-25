@@ -89,6 +89,7 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         $scope.main.ay= [[0]];
         $scope.main.ax = [[0]];
         $scope.main.temp = [[0]];
+        $scope.main.graph = 'A';
 
         /* Directives contain
          * - profile photo
@@ -128,7 +129,8 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
             console.log("client connected");
         });
 
-        var most_recent = new Date();
+        var most_recent = new Date($scope.main.lastStateChange);
+        most_recent.setDate($scope.main.lastStateChange.getDate() - 1);
 
         socket.on('from:kythera', function(message){
             message = JSON.parse(message);

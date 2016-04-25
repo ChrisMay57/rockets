@@ -101,7 +101,7 @@
     <div class="col-lg-8">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Altitude
+                Telemetry
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -109,9 +109,46 @@
                     <!--div class="flot-chart-content" id="flot-line-chart"></div-->
                     <!--div chart='main.accelY'> </div-->
                     <!--flot dataset="main.accelY" options="main.myChartOptions"></flot-->
-                    <canvas id="line" class="chart chart-line" chart-data="main.atm"
+                    <div ng-show="main.graph === 'A'" >
+                      <canvas id="line" class="chart chart-line" chart-data="main.heading"
+                        chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[1]">
+                      </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'B'" >
+                    <canvas id="line"  class="chart chart-line" chart-data="main.pitch"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[2]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'C'" >
+                    <canvas id="line"  class="chart chart-line" chart-data="main.yaw"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[3]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'D'"  >
+                    <canvas id="line" class="chart chart-line" chart-data="main.az"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[4]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'E'" >
+                    <canvas id="line"  class="chart chart-line" chart-data="main.ay"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[5]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'F'" >
+                    <canvas id="line"  class="chart chart-line" chart-data="main.ax"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[6]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'G'">
+                    <canvas id="line"  class="chart chart-line" chart-data="main.atm"
                       chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[0]">
                     </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'H'" >
+                    <canvas id="line" class="chart chart-line" chart-data="main.temp"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[7]">
+                    </canvas>
+                    </div>
                 </div>
             </div>
             <!-- /.panel-body -->
@@ -125,42 +162,42 @@
           <!-- /.panel-heading -->
           <div class="panel-body">
               <div class="list-group">
-                  <a href="#" class="list-group-item">
+                  <a href="javascript:void(0);" ng-click="updateView('A');" class="list-group-item">
                       <i class="fa fa-compass fa-fw"></i> Heading
                       <span class="pull-right text-muted small"><em>{{main.recentTelem.heading}}</em>
                       </span>
                   </a>
-                  <a href="#" class="list-group-item">
+                  <a href="javascript:void(0);" ng-click="updateView('B');" class="list-group-item">
                       <i class="fa fa-rocket fa-fw"></i> Pitch
                       <span class="pull-right text-muted small"><em>{{main.recentTelem.pitch}}</em>
                       </span>
                   </a>
-                  <a href="#" class="list-group-item">
+                  <a href="javascript:void(0);" ng-click="updateView('C');" class="list-group-item">
                       <i class="fa fa-rocket fa-fw"></i> Yaw
                       <span class="pull-right text-muted small"><em>{{main.recentTelem.yaw}}</em>
                       </span>
                   </a>
-                  <a href="#" class="list-group-item">
+                  <a href="javascript:void(0);" ng-click="updateView('D');" class="list-group-item">
                       <i class="fa fa-space-shuttle fa-fw"></i> Vertical Acceleration
                       <span class="pull-right text-muted small"><em>{{main.recentTelem.az}}</em>
                       </span>
                   </a>
-                  <a href="#" class="list-group-item">
+                  <a href="javascript:void(0);" ng-click="updateView('E');" class="list-group-item">
                       <i class="fa fa-space-shuttle fa-fw"></i> Y-axis Acceleration
                       <span class="pull-right text-muted small"><em>{{main.recentTelem.ay}}</em>
                       </span>
                   </a>
-                  <a href="#" class="list-group-item">
+                  <a href="javascript:void(0);" ng-click="updateView('F');" class="list-group-item">
                       <i class="fa fa-space-shuttle fa-fw"></i> X-axis Acceleration
                       <span class="pull-right text-muted small"><em>{{main.recentTelem.ax}}</em>
                       </span>
                   </a>
-                  <a href="#" class="list-group-item">
+                  <a href="javascript:void(0);" ng-click="updateView('G');" class="list-group-item">
                       <i class="fa  fa-tasks fa-fw"></i> Pressure (atm)
                       <span class="pull-right text-muted small"><em>{{main.recentTelem.atm}}</em>
                       </span>
                   </a>
-                  <a href="#" class="list-group-item">
+                  <a href="javascript:void(0);" ng-click="updateView('H');" class="list-group-item">
                       <i class="fa  fa-tasks fa-fw"></i> Temperature
                       <span class="pull-right text-muted small"><em>{{main.recentTelem.temp}}</em>
                       </span>
