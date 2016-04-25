@@ -4,7 +4,7 @@ var app = angular.module('kytheraApp', ['ngRoute',
     'ngMaterial',
     'ngResource',
     'btford.socket-io',
-    'angular-flot'
+    'chart.js'
   ]).
   config(function ($routeProvider) {
         $routeProvider.
@@ -70,8 +70,25 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         $scope.main.rocketeers = "Rocketers";
         $scope.main.downlinkStream = [];
 
-        $scope.main.accelY = [ [[0, 1], [1, 5], [2, 2], [3, 2]] ];
-        $scope.main.myChartOptions = {};
+        $scope.main.recentTelem = {};
+        $scope.main.telemError = false;
+
+        //$scope.main.accelY = [];
+        //$scope.main.myChartOptions = {};
+        $scope.main.lastStateChange = new Date();
+
+        $scope.main.timeStamps = [new Date().toTimeString().substring(3,9)];
+        $scope.main.Series = [['Pressure(atm)'],['Heading(deg)'],['Pitch(deg)']
+                              ,['Yaw(deg)'] ,['Acceleration Z-axis(m/s^2)'] ,['Acceleration Y-axis(m/s^2)']
+                              ,['Acceleration X-axis(m/s^2)'] ,['Temp(F)']];
+        $scope.main.atm = [[0]];
+        $scope.main.heading = [[0]];
+        $scope.main.pitch = [[0]];
+        $scope.main.yaw = [[0]];
+        $scope.main.az = [[0]];
+        $scope.main.ay= [[0]];
+        $scope.main.ax = [[0]];
+        $scope.main.temp = [[0]];
 
         /* Directives contain
          * - profile photo
@@ -81,19 +98,30 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
          */
         $scope.main.messages = [];
 
-        var adding = {};
-        adding["source"] = "/images/kythera.png";
-        adding["name"] = "Kythera";
-        adding["message"] = "Hey, I'm Kythera! I'm pretty chatty so I'll be asking you some questions before flight :D";
-        adding["time"] = new Date();
+        var first_message = {};
+        first_message["source"] = "/images/kythera.png";
+        first_message["name"] = "Kythera";
+        first_message["message"] = "Hey, I'm Kythera! I'm pretty chatty so I'll be asking you some questions before flight :D";
+        first_message["time"] = new Date();
 
-        $scope.main.messages.push(adding);
+        $scope.main.messages.push(first_message);
 
-        $scope.main.progress = $scope.main.currentStage + "/" + $scope.main.stages;
+        //$scope.main.progress = $scope.main.currentStage + "/" + $scope.main.stages;
 
         /*socket.on('send:message', function (message) {
           $scope.main.messages.push(message);
         });*/
+        $scope.main.updateGraphs = function(){
+            $scope.main.timeStamps.push(most_recent.toTimeString().substring(3,9));
+            $scope.main.atm[0].push($scope.main.recentTelem.atm);
+            $scope.main.heading[0].push($scope.main.recentTelem.heading);
+            $scope.main.pitch[0].push($scope.main.recentTelem.pitch);
+            $scope.main.yaw[0].push($scope.main.recentTelem.yaw);
+            $scope.main.az[0].push($scope.main.recentTelem.az);
+            $scope.main.ay[0].push($scope.main.recentTelem.ay);
+            $scope.main.ax[0].push($scope.main.recentTelem.ax);
+            $scope.main.temp[0].push($scope.main.recentTelem.temp);
+        }
 
         socket.on('connect', function(data) {
             //socket.emit('join', 'Hello World from client');
@@ -101,20 +129,67 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         });
 
         var most_recent = new Date();
+
         socket.on('from:kythera', function(message){
             message = JSON.parse(message);
-            console.log("FROM KYTHERA: " + message);
+            //console.log("FROM KYTHERA: " + message);
             most_recent = new Date(message.time);
 
+            // add to the raw data stream
+            var newRaw = {};
+            newRaw["time"] = most_recent;
+            newRaw["msg"] = message;
+            $scope.main.downlinkStream.push(newRaw);
+
+            // update number of online ppl
             $scope.main.num_online = message.num_online;
 
+            // convert to string and parse
+            //message.data = message.data.toString()
+            if(message["data"].substring(0,2)!== $scope.main.currentStage){
+               $scope.main.lastStateChange = new Date();
+            }
+
+            $scope.main.currentStage = message.data.substring(0,2);
+            console.log("STAGE: "+message.data);
             // add the message to our model locally
-            $scope.main.messages.push({
-              source:"/images/kythera.png",
-              name: "Kythera",
-              message: message.data,
-              time: most_recent
-            });
+            if(message.data.charAt(2) === "D"){
+              $scope.main.messages.push({
+                source:"/images/kythera.png",
+                name: "Kythera",
+                message: message.data.substr(3),
+                time: most_recent
+              });
+            }else if(message.data.charAt(2) === "K"){
+              var recieved_telem = message["data"];
+              //console.log(recieved_telem.substring(3,6));
+              $scope.main.recentTelem["heading"] = parseInt(message.data.substring(3,6));
+              $scope.main.recentTelem["yaw"]= parseInt(message.data.substring(6,9));
+              $scope.main.recentTelem["pitch"]= parseInt(message.data.substring(9,12));
+              $scope.main.recentTelem["ax"] = parseInt(message.data.substring(12,14));
+              $scope.main.recentTelem["ay"] = parseInt(message.data.substring(14,16));
+              $scope.main.recentTelem["az"] = parseInt(message.data.substring(16,19));
+              $scope.main.recentTelem["atm"]= parseInt(message.data.substring(19,22));
+              $scope.main.recentTelem["temp"]= parseInt(message.data.substring(22,25));
+              $scope.main.recentTelem["time"]= parseInt(message.data.substring(25,29));
+              $scope.main.recentTelem["checksum"]= parseInt(message.data.substring(29));
+              //console.log($scope.main.recentTelem);
+              var checksum = $scope.main.recentTelem["heading"]+$scope.main.recentTelem["yaw"]+
+                 $scope.main.recentTelem["pitch"] +$scope.main.recentTelem["ax"]+
+                 $scope.main.recentTelem["ay"] + $scope.main.recentTelem["az"]+
+                 $scope.main.recentTelem["atm"] + $scope.main.recentTelem["temp"]+
+                 $scope.main.recentTelem["time"];
+              //console.log(checksum);
+              if(checksum !== $scope.main.recentTelem["checksum"]){
+                 $scope.main.telemError = true;
+              }else{
+                 $scope.main.telemError = false;
+              }
+              $scope.main.updateGraphs();
+            } else if(message.data.charAt(2) === "N"){
+              console.log("unimplemented node health report");
+            }
+
         });
 
         $scope.main.healthy = false;
@@ -122,8 +197,8 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         setInterval(function(){
             $scope.$apply( function(){
                 var right_now = new Date();
-                var seconds = (right_now.getTime() - most_recent.getTime())/1000;
-                if(seconds > 10){
+                var delay = (right_now.getTime() - most_recent.getTime())/1000;
+                if(delay > 10){
                   $scope.main.healthy = false;
                 } else{
                   $scope.main.healthy = true;

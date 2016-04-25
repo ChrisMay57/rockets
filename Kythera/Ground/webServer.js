@@ -113,12 +113,19 @@ function showPortOpen() {
 // Define behaviors for when we recieve data
 myPort.on('open', showPortOpen);
 
+function showError(error) {
+   console.log('Serial port error: ' + error);
+}
+
+myPort.on('error', showError);
+
 // What to do when our connection opens
-function openSocket(socket){
+function openSocket(socket){  
 	// this function runs if there's input from the client:
 	socket.on('from:controller', function(data) {
     console.log("GOT SOMETHING");
-		myPort.write(data);							// send the data to the serial device
+		myPort.write(data);
+    console.log("SENT");							// send the data to the serial device
     log.write("SENDING at " + time() + "\n")
     log.write(data + "\n\n");
 	});
@@ -164,7 +171,6 @@ function showError(error) {
    console.log('Serial port error: ' + error);
    log.write('Serial port error: ' + error);
 }
-
 
 /*
  **********

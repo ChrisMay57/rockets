@@ -38,7 +38,32 @@ app.controller('launchFlowController', ['$scope', '$rootScope', '$location', '$r
         $scope.main.num_online = $scope.main.FetchModel("/online", $scope.onlineCallback);
       };
 
+      function checkTime(i) {
+          if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+          return i;
+      }
+
+      $scope.setTimer = function() {
+          var now = new Date();
+          var timer = (now.getTime() - $scope.main.lastStateChange.getTime())/1000;
+          var h = Math.floor(timer / 3600);
+          var m = Math.floor(timer / 60);
+          var s = Math.floor(timer % 100);
+          m = checkTime(m);
+          s = checkTime(s);
+          document.getElementById('sinceTime').innerHTML = "T+"+ m + ":" + s;
+          var t = setTimeout($scope.setTimer, 500);
+      };
+
+      $scope.setTimer();
+
+
       // LETS DO SOME GRAPHS
+      
+      /*$scope.onClick = function (points, evt) {
+        console.log(points, evt);
+      };*/
+
 }]);
 
 /*app.directive('chart', function(){

@@ -56,7 +56,10 @@
 
       <script src="js/three.min.js"></script>
 
-
+      <!-- chart stuff -->
+      <script src="/bower_components/Chart.js/Chart.js"></script>
+      <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+      <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css">
 
     </head>
 
@@ -80,6 +83,10 @@
 
 
               <ul class="nav navbar-top-links navbar-right">
+                 <li>
+                   <span ng-show="main.telemError" class="alert alert-danger">
+                     <i class="fa fa-bug fa-fw"></i> Check-Sum Error</span>
+                 </li>
                  <li>
                    <span ng-show="main.healthy" class="alert alert-success">
                       <i class="fa fa-bullseye fa-fw"></i> Signal Aquired</span>
