@@ -57,9 +57,13 @@ app.controller('launchFlowController', ['$scope', '$rootScope', '$location', '$r
 
       $scope.setTimer();
 
+      $scope.updateView = function(val){
+        $scope.main.graph = val;
+        console.log($scope.main.graph);
+      }
 
       // LETS DO SOME GRAPHS
-      
+
       /*$scope.onClick = function (points, evt) {
         console.log(points, evt);
       };*/
