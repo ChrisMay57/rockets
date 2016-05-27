@@ -23,7 +23,7 @@ unsigned int txTimer,rxTimer;
 
 
 // -------------------------------------------------------------
-static void hexDump(uint8_t dumpLen, uint8_t *bytePtr)
+/*static void hexDump(uint8_t dumpLen, uint8_t *bytePtr)
 {
   uint8_t working;
   while( dumpLen-- ) {
@@ -33,7 +33,7 @@ static void hexDump(uint8_t dumpLen, uint8_t *bytePtr)
   }
   Serial.write('\r');
   Serial.write('\n');
-}
+}*/
 
 
 // -------------------------------------------------------------

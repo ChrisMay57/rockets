@@ -110,7 +110,7 @@
                     <!--div chart='main.accelY'> </div-->
                     <!--flot dataset="main.accelY" options="main.myChartOptions"></flot-->
                     <div ng-show="main.graph === 'A'" >
-                      <canvas id="line" class="chart chart-line" chart-data="main.heading"
+                      <canvas id="line" class="chart chart-line" chart-data="main.rollrate"
                         chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[1]">
                       </canvas>
                     </div>
@@ -163,8 +163,8 @@
           <div class="panel-body">
               <div class="list-group">
                   <a href="javascript:void(0);" ng-click="updateView('A');" class="list-group-item">
-                      <i class="fa fa-compass fa-fw"></i> Heading
-                      <span class="pull-right text-muted small"><em>{{main.recentTelem.heading}}</em>
+                      <i class="fa fa-compass fa-fw"></i> Roll Rate
+                      <span class="pull-right text-muted small"><em>{{main.recentTelem.rollrate}}</em>
                       </span>
                   </a>
                   <a href="javascript:void(0);" ng-click="updateView('B');" class="list-group-item">

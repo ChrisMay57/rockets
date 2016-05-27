@@ -78,11 +78,11 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         $scope.main.lastStateChange = new Date();
 
         $scope.main.timeStamps = [new Date().toTimeString().substring(3,9)];
-        $scope.main.Series = [['Pressure(atm)'],['Heading(deg)'],['Pitch(deg)']
+        $scope.main.Series = [['Altitude (m)'],['Roll Rate(rev/s)'],['Pitch(deg)']
                               ,['Yaw(deg)'] ,['Acceleration Z-axis(m/s^2)'] ,['Acceleration Y-axis(m/s^2)']
                               ,['Acceleration X-axis(m/s^2)'] ,['Temp(F)']];
         $scope.main.atm = [[0]];
-        $scope.main.heading = [[0]];
+        $scope.main.rollrate = [[0]];
         $scope.main.pitch = [[0]];
         $scope.main.yaw = [[0]];
         $scope.main.az = [[0]];
@@ -115,7 +115,7 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
         $scope.main.updateGraphs = function(){
             $scope.main.timeStamps.push(most_recent.toTimeString().substring(3,9));
             $scope.main.atm[0].push($scope.main.recentTelem.atm);
-            $scope.main.heading[0].push($scope.main.recentTelem.heading);
+            $scope.main.rollrate[0].push($scope.main.recentTelem.rollrate);
             $scope.main.pitch[0].push($scope.main.recentTelem.pitch);
             $scope.main.yaw[0].push($scope.main.recentTelem.yaw);
             $scope.main.az[0].push($scope.main.recentTelem.az);
@@ -165,18 +165,20 @@ app.controller('MainController', ['$scope', '$rootScope', '$location', '$resourc
             }else if(message.data.charAt(2) === "K"){
               var recieved_telem = message["data"];
               //console.log(recieved_telem.substring(3,6));
-              $scope.main.recentTelem["heading"] = parseInt(message.data.substring(3,6));
-              $scope.main.recentTelem["yaw"]= parseInt(message.data.substring(6,9));
-              $scope.main.recentTelem["pitch"]= parseInt(message.data.substring(9,12));
-              $scope.main.recentTelem["ax"] = parseInt(message.data.substring(12,14));
-              $scope.main.recentTelem["ay"] = parseInt(message.data.substring(14,16));
-              $scope.main.recentTelem["az"] = parseInt(message.data.substring(16,19));
-              $scope.main.recentTelem["atm"]= parseInt(message.data.substring(19,22));
-              $scope.main.recentTelem["temp"]= parseInt(message.data.substring(22,25));
-              $scope.main.recentTelem["time"]= parseInt(message.data.substring(25,29));
-              $scope.main.recentTelem["checksum"]= parseInt(message.data.substring(29));
+              $scope.main.recentTelem["ay"] = parseInt(message.data.substring(3,8));
+              $scope.main.recentTelem["ax"] = parseInt(message.data.substring(8,13));
+              $scope.main.recentTelem["az"] = parseInt(message.data.substring(13,18));
+              $scope.main.recentTelem["temp"]= parseInt(message.data.substring(18,22));
+              $scope.main.recentTelem["atm"]= parseInt(message.data.substring(22,26));
+              $scope.main.recentTelem["yaw"]= parseInt(message.data.substring(26,31));
+              $scope.main.recentTelem["pitch"]= parseInt(message.data.substring(31,36));
+              $scope.main.recentTelem["rollrate"] = parseInt(message.data.substring(36,41));
+              //$scope.main.recentTelem["atm"]= parseInt(message.data.substring(19,22));
+              //$scope.main.recentTelem["temp"]= parseInt(message.data.substring(22,25));
+              //$scope.main.recentTelem["time"]= parseInt(message.data.substring(25,29));
+              $scope.main.recentTelem["checksum"]= parseInt(message.data.substring(41));
               //console.log($scope.main.recentTelem);
-              var checksum = $scope.main.recentTelem["heading"]+$scope.main.recentTelem["yaw"]+
+              var checksum = $scope.main.recentTelem["rollrate"]+$scope.main.recentTelem["yaw"]+
                  $scope.main.recentTelem["pitch"] +$scope.main.recentTelem["ax"]+
                  $scope.main.recentTelem["ay"] + $scope.main.recentTelem["az"]+
                  $scope.main.recentTelem["atm"] + $scope.main.recentTelem["temp"]+
