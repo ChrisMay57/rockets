@@ -1,0 +1,263 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Launch Flow</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-tasks fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">{{main.currentStage}} / {{main.stages}}</div>
+                        <div>Progress States</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-history fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge" id="sinceTime"></div>
+                        <div>since last state change</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-rebel fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">{{main.num_online}}</div>
+                        <div>{{main.rocketeers}} Online</div>
+                    </div>
+                </div>
+            </div>
+            <a href="javascript:void(0);" ng-click="updateOnline();">
+                <div class="panel-footer">
+                    <span class="pull-left">Refresh</span>
+                    <span class="pull-right"><i class="fa fa-refresh"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-warning fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">{{main.errorCount}}</div>
+                        <div>Anomolies reporting</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Telemetry
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="flot-chart">
+                    <!--div class="flot-chart-content" id="flot-line-chart"></div-->
+                    <!--div chart='main.accelY'> </div-->
+                    <!--flot dataset="main.accelY" options="main.myChartOptions"></flot-->
+                    <div ng-show="main.graph === 'A'" >
+                      <canvas id="line" class="chart chart-line" chart-data="main.heading"
+                        chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[1]">
+                      </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'B'" >
+                    <canvas id="line"  class="chart chart-line" chart-data="main.pitch"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[2]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'C'" >
+                    <canvas id="line"  class="chart chart-line" chart-data="main.yaw"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[3]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'D'"  >
+                    <canvas id="line" class="chart chart-line" chart-data="main.az"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[4]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'E'" >
+                    <canvas id="line"  class="chart chart-line" chart-data="main.ay"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[5]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'F'" >
+                    <canvas id="line"  class="chart chart-line" chart-data="main.ax"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[6]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'G'">
+                    <canvas id="line"  class="chart chart-line" chart-data="main.atm"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[0]">
+                    </canvas>
+                    </div>
+                    <div ng-show="main.graph === 'H'" >
+                    <canvas id="line" class="chart chart-line" chart-data="main.temp"
+                      chart-labels="main.timeStamps" chart-legend="true" chart-series="main.Series[7]">
+                    </canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+  <div class="col-lg-4">
+      <div class="panel panel-default">
+          <div class="panel-heading">
+              <i class="fa fa-dashboard fa-fw"></i> Latest Telemetry
+          </div>
+          <!-- /.panel-heading -->
+          <div class="panel-body">
+              <div class="list-group">
+                  <a href="javascript:void(0);" ng-click="updateView('A');" class="list-group-item">
+                      <i class="fa fa-compass fa-fw"></i> Heading
+                      <span class="pull-right text-muted small"><em>{{main.recentTelem.heading}}</em>
+                      </span>
+                  </a>
+                  <a href="javascript:void(0);" ng-click="updateView('B');" class="list-group-item">
+                      <i class="fa fa-rocket fa-fw"></i> Pitch
+                      <span class="pull-right text-muted small"><em>{{main.recentTelem.pitch}}</em>
+                      </span>
+                  </a>
+                  <a href="javascript:void(0);" ng-click="updateView('C');" class="list-group-item">
+                      <i class="fa fa-rocket fa-fw"></i> Yaw
+                      <span class="pull-right text-muted small"><em>{{main.recentTelem.yaw}}</em>
+                      </span>
+                  </a>
+                  <a href="javascript:void(0);" ng-click="updateView('D');" class="list-group-item">
+                      <i class="fa fa-space-shuttle fa-fw"></i> Vertical Acceleration
+                      <span class="pull-right text-muted small"><em>{{main.recentTelem.az}}</em>
+                      </span>
+                  </a>
+                  <a href="javascript:void(0);" ng-click="updateView('E');" class="list-group-item">
+                      <i class="fa fa-space-shuttle fa-fw"></i> Y-axis Acceleration
+                      <span class="pull-right text-muted small"><em>{{main.recentTelem.ay}}</em>
+                      </span>
+                  </a>
+                  <a href="javascript:void(0);" ng-click="updateView('F');" class="list-group-item">
+                      <i class="fa fa-space-shuttle fa-fw"></i> X-axis Acceleration
+                      <span class="pull-right text-muted small"><em>{{main.recentTelem.ax}}</em>
+                      </span>
+                  </a>
+                  <a href="javascript:void(0);" ng-click="updateView('G');" class="list-group-item">
+                      <i class="fa  fa-tasks fa-fw"></i> Pressure (atm)
+                      <span class="pull-right text-muted small"><em>{{main.recentTelem.atm}}</em>
+                      </span>
+                  </a>
+                  <a href="javascript:void(0);" ng-click="updateView('H');" class="list-group-item">
+                      <i class="fa  fa-tasks fa-fw"></i> Temperature
+                      <span class="pull-right text-muted small"><em>{{main.recentTelem.temp}}</em>
+                      </span>
+                  </a>
+              </div>
+              <!-- /.list-group -->
+              <!--a href="#" class="btn btn-default btn-block">View All Alerts</a-->
+          </div>
+          <!-- /.panel-body -->
+      </div>
+    </div>
+    <!-- /.col-lg-4 -->
+</div>
+
+<div class="row" ng-show={{main.permission}}>
+    <!-- /.panel -->
+    <div class="col-lg-12" >
+      <div class="chat-panel panel panel-default">
+        <div class="panel-heading">
+            <i class="fa fa-comments fa-fw"></i>
+            Chat with Kythera
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+            <ul class="chat" ng-repeat="directive in main.messages">
+                <li class="left clearfix">
+                    <span class="chat-img pull-left">
+                        <img src={{directive.source}} alt="User Avatar" class="img-circle" />
+                    </span>
+                    <div class="chat-body clearfix">
+                        <div class="header">
+                            <strong class="primary-font">{{directive.name}}</strong>
+                            <p class="time"> sent on {{main.formatTime(directive.time)}} </p>
+                        </div>
+                        <p>
+                            {{directive.message}}
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- /.panel-body -->
+        <div class="panel-footer">
+            <form ng-submit=sendMessage() class="input-group" id="chatting">
+                <input autocomplete="off" type="text" id="btn-input" class="form-control input-sm" ng-model="text" name="text" placeholder="Type your message here..."/>
+                <span class="input-group-btn">
+                    <input class="btn btn-warning btn-sm" id="btn-chat" type="submit" value="Send" />
+                </span>
+            </div>
+        </div>
+      </div>
+      <!-- /.panel-footer -->
+
+      <!-- Flot Charts JavaScript -->
+      <script src="../bower_components/flot/excanvas.min.js"></script>
+      <script src="../bower_components/flot/jquery.flot.js"></script>
+      <script src="../bower_components/flot/jquery.flot.pie.js"></script>
+      <script src="../bower_components/flot/jquery.flot.resize.js"></script>
+      <script src="../bower_components/flot/jquery.flot.time.js"></script>
+      <script src="../bower_components/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
+      <script src="../js/flot-data.js"></script>
+</div>
+<!-- /.panel .chat-panel -->

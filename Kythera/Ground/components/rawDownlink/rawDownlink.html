@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Raw Downlink Messages</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <ul class="panel panel-primary wide" ng-repeat="item in main.downlinkStream">
+      <li>SENT {{main.formatTime(item.time)}}: {{item.msg}}</li>
+    </ul>
+    <!-- /.panel panel-primary wide -->
+</div>
+<!-- /.row -->
