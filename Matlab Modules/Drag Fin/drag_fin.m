@@ -28,8 +28,8 @@ clear; close all; clc;
 textsize = 15; % font size
 linesize = 2;  % line width
 plot_thrust = 0;
-plot_h_u_a = 1;
-plot_forces = 0;
+plot_h_u_a = 0;
+plot_forces = 1;
 
 % Rocket and motor characteristics
 rocket.l   = 3.44; % length, m
@@ -81,7 +81,6 @@ end
 t = 1:time_step:100;
 rho = @(x) 1.2250.*(288.15/(288.15-0.0065.*x)).^...
     (1+9.80665.*0.0289644/(8.31432.*0.0065));
-mach1 = 343; % speed of sound, m/s
 altitude_target = 3048; % m
 
 % inital liftoff conditions and vector initialization
@@ -135,13 +134,17 @@ xlimit = [0 t_land];
 if plot_h_u_a == 1
     figure
     %subplot(3,1,1)
-    plot(t,altitude_target.*ones(1,length(t)),'--',t,h,'LineWidth',linesize)
+    hold on
+    plot(t,altitude_target.*ones(1,length(t)),'--')
+    %y1 = get(gca,'ylim');
+    %plot([t_powered(end),t_powered(end)],y1)
+    plot(t,h,'LineWidth',linesize)
     title('Altitude')
     xlabel('Time (s)')
     ylabel('Height (m)')
     xlim(xlimit)
     grid on
-    legend('3048m','Location','Southwest')
+    legend('3048m','Burnout','Location','Southwest')
     % label apogee
     dim = [.4 .4 .6 .2];
     str = strcat({'Apogee = '},num2str(max(h)));
@@ -180,7 +183,31 @@ end
 
 %% Drag fin characteristics
 
-net_energy = rocket.drymass.*g(1).*max(h);
-desired_energy = m(end).*g(end).*altitude_target;
-energy_loss_req = net_energy - desired_energy;
-percent_energy_loss = (net_energy - desired_energy)/desired_energy
+rocket.burnouth = h(length(t_powered));
+rocket.apogee = max(h);
+
+% Energy calculations
+e_net = rocket.drymass.*g(1).*rocket.apogee;
+e_want = rocket.drymass.*g(end).*altitude_target;
+e_loss = e_net - e_want;
+e_loss_perc = (e_net - e_want)/e_want; % J
+disp('Percentage of energy need to lose to drag')
+disp(strcat(num2str(e_loss_perc.*100),'%'))
+
+% distance to altitude target from altitude at 10s
+for i = 1:length(t)
+    if t(i) == 10
+        i10 = i;
+    end
+end
+d2at =  altitude_target - h(i10); % m
+D_df = e_loss./d2at;
+disp('Amount of drag needed if fins open after 10s')
+disp(strcat(num2str(D_df),'N'))
+
+% small angle 
+theta_max_deg = 17.5; % degrees
+theta_max_rad = 0.3054326; % rad
+
+% factor of safety for control authority
+fs = 1.5;
