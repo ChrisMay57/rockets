@@ -26,11 +26,11 @@ clear; close all; clc;
 
 % Plots
 linesize = 2;  % line width
-plot_thrust = 0;
-plot_h_u_a = 0;
-plot_combined_hu = 0;
+plot_thrust = 1;
+plot_h_u_a = 1;
+plot_combined_hu = 1;
 plot_h = 1;
-plot_forces = 0;
+plot_forces = 1;
 
 %% Rocket and motor characteristics
 
@@ -73,11 +73,11 @@ rocket.wetmass = rocket.nomotormass + motor.wetmass; % kg
 
 % Plot the thrust data
 if plot_thrust == 1
-    thrust_fig = figure('Position', [100, 100, 2000, 1000]);
+    figure
     plot(t_thrust,thrust_curve,'-mo','LineWidth',linesize)
-    set(gca,'FontSize',textsize)
     xlim([0 t_thrust(end)])
-    title('Thrust Curve')
+    thrust_title = strcat({'Thrust Curve of '},motor.name);
+    title(thrust_title)
     xlabel('Time (s)')
     ylabel('Thrust (N)')
     grid on
@@ -94,9 +94,9 @@ t_fins_deployed = 7.3;    % s
 per_normal_drag = 1.544;    % *100%
 
 % Displays your input parameters
-disp(strcat(({'Fins deployed at '}),strcat(num2str(t_fins_deployed),'s')))
-disp(strcat({'creating '},...
-    strcat(num2str(per_normal_drag*100),'% more drag than just the rocket')))
+disp(strcat(strcat(({'Fins deployed at '}),strcat(num2str(t_fins_deployed),'s')),...
+strcat({', creating '},...
+    strcat(num2str(per_normal_drag*100),'% more drag than just the rocket'))))
 
 % Atmospheric properties
 mach1const = 343; % m/s
@@ -165,14 +165,14 @@ xlimit = [0 t_land];  % plots up to the specified limits
 %% Simulation Plots
 
 apogee_label_dim = [.4 .3 .6 .1];
-apogee_label_str = strcat({'Apogee = '},num2str(max(h)));
+apogee_label_str = strcat(strcat(strcat({'Apogee = '},num2str(max(h)))),'m');
 
 if plot_h_u_a == 1
     figure
     hold on
     plot(t,altitude_target.*ones(1,length(t)),'--','LineWidth',linesize)
     plot(t,h,'LineWidth',linesize)
-    title('Altitude')
+    title(strcat(strcat({'Altitude ('},motor.name),')'))
     xlabel('Time (s)')
     ylabel('Height (m)')
     xlim(xlimit)
@@ -186,7 +186,7 @@ if plot_h_u_a == 1
     hold on
     plot(t,mach1,'--','LineWidth',linesize)
     plot(t,u,'LineWidth',linesize)
-    title('Velocity')
+    title(strcat(strcat({'Velocity ('},motor.name),')'))
     xlabel('Time (s)')
     ylabel('Velocity (m/s)')
     xlim(xlimit)
@@ -195,7 +195,7 @@ if plot_h_u_a == 1
     
     figure
     plot(t(1:length(a)),a./g,'LineWidth',linesize)
-    title('Acceleration')
+    title(strcat(strcat({'Acceleration ('},motor.name),')'))
     xlabel('Time (s)')
     ylabel('g')
     xlim(xlimit)
@@ -206,7 +206,7 @@ if plot_combined_hu == 1
     figure
     yyaxis right 
     plot(t,h,t,altitude_target.*ones(1,length(t)),'LineWidth',linesize)
-    title('Altitude and Velocity')
+    title(strcat(strcat({'Altitude and Velocity ('},motor.name),')'))
     xlabel('Time (s)')
     ylabel('Height (m)')
     xlim(xlimit)
@@ -221,7 +221,7 @@ if plot_h == 1
     hold on
     plot(t,altitude_target.*ones(1,length(t)),'--','LineWidth',linesize)
     plot(t,h,'LineWidth',linesize)
-    title('Altitude')
+    title(strcat(strcat({'Altitude ('},motor.name),')'))
     xlabel('Time (s)')
     ylabel('Height (m)')
     xlim(xlimit)
@@ -235,7 +235,7 @@ end
 if plot_forces == 1
     figure
     plot(t,gravityloss,t_powered,T,t,dragloss,'LineWidth',linesize);
-    title('In-flight Forces')
+    title('In-Flight Forces')
     xlabel('Time (s)')
     ylabel('Force (N)')
     xlim(xlimit)
@@ -248,23 +248,25 @@ end
 rocket.burnout_h = h(length(t_powered));
 rocket.apogee = max(h);
 
-% Energy calculations
+% Energy calculations [J]
 e_net = rocket.drymass.*g(1).*rocket.apogee;
 e_want = rocket.drymass.*g(end).*altitude_target;
-e_loss = e_net - e_want;
-e_loss_perc = (e_net - e_want)/e_want; % J
+e_loss = e_net - e_want;               
+e_loss_perc = (e_net - e_want)/e_want; 
 disp('Percentage of energy need to lose to drag')
 disp(strcat(num2str(e_loss_perc.*100),'%'))
 
-% distance to altitude target from altitude at 10s
+% find index of distance to altitude target from altitude at fin deployment
 for i = 1:length(t)
     if t(i) == t_fins_deployed
         i_fins_deployed = i;
     end
 end
 d2at =  altitude_target - h(i_fins_deployed); % m
-D_df = e_loss./d2at;
-disp('Amount of drag needed if fins open after 10s')
+D_df = e_loss./d2at;                          % N
+
+disp(strcat(strcat('Amount of drag needed if fins open after ',...
+    num2str(t_fins_deployed)),'s'))
 disp(strcat(num2str(D_df),'N'))
 disp('Altitude Achieved')
 disp(strcat(num2str(rocket.apogee),'m'))
