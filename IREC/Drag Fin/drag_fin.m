@@ -26,11 +26,11 @@ clear; close all; clc;
 
 % Plots
 linesize = 2;  % line width
-plot_thrust = 1;
-plot_h_u_a = 1;
-plot_combined_hu = 1;
+plot_thrust = 0;
+plot_h_u_a = 0;
+plot_combined_hu = 0;
 plot_h = 1;
-plot_forces = 1;
+plot_forces = 0;
 
 %% Rocket and motor characteristics
 
