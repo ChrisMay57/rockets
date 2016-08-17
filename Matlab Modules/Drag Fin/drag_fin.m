@@ -13,7 +13,7 @@
 
 % Implementation of drag fins
 % Look at the potential energy (PE = m*g*h) on the control flight
-% Reduce PE to PE_desired = m*g*h_desired
+% We want to reduce PE to PE_desired = m*g*h_desired
 % PE-PE_desired = D_df * t_open
 % where D_df is the drag of the drag fins and t_open is time the drag fins
 % are deployed
@@ -25,31 +25,31 @@
 clear; close all; clc;
 
 % Plots
-textsize = 15; % font size
 linesize = 2;  % line width
-plot_thrust = 0;
-plot_h_u_a = 0;
+plot_thrust = 1;
+plot_h_u_a = 1;
+plot_combined_hu = 1;
+plot_h = 1;
 plot_forces = 1;
 
-% Rocket and motor characteristics
+%% Rocket and motor characteristics
+
+% IREC Rocket Baseline is current rocket
 rocket.l   = 3.44; % length, m
 rocket.d   = 0.14; % diameter, m
 rocket.Cd  = 0.6;  % coeff of drag
 rocket.S   = pi.*(rocket.d./2).^2; % front cross sectional area, m^2
+rocket.nomotormass = 19.428; % kg
+
+% Specify the motor you want
 motor.name = 'M1939';
+% Input motor data (always check that these values match chosen motor)
 motor.wetmass  = 8.9882; % kg
 motor.propmass = 5.7191; % kg
-motor.drymass  = motor.wetmass-motor.propmass; % kg
-motor.burntime = 6.20;   % s
-motor.mdotavg  = (motor.wetmass-motor.propmass)./motor.burntime; % kg/s
-rocket.nomotormass = 19.428; % kg 
-rocket.drymass = rocket.nomotormass + motor.drymass; % kg
-rocket.wetmass = rocket.nomotormass + motor.wetmass; % kg
-
-%% Thrust Curve
 
 % Load thrust curve
-fileID = fopen('AeroTech_M1939.txt');
+motor_str = strcat('AeroTech_',strcat(motor.name,'.txt'));
+fileID = fopen(motor_str);
 thrust_curve = textscan(fileID,'%f %f','headerLines',5);
 fclose(fileID);
 
@@ -64,13 +64,20 @@ time_step = 0.02;
 t_powered = 0:time_step:t_thrust(end);
 T = interp1(t_thrust,thrust_curve,t_powered);
 
-% Plot the data
+% Do some calculations for powered ascent properties
+motor.drymass  = motor.wetmass-motor.propmass; % kg
+motor.burntime = t_powered(end);   % s
+motor.mdotavg  = motor.propmass./motor.burntime; % kg/s
+rocket.drymass = rocket.nomotormass + motor.drymass; % kg
+rocket.wetmass = rocket.nomotormass + motor.wetmass; % kg
+
+% Plot the thrust data
 if plot_thrust == 1
-    thrust_fig = figure('Position', [100, 100, 2000, 1000]);
+    figure
     plot(t_thrust,thrust_curve,'-mo','LineWidth',linesize)
-    set(gca,'FontSize',textsize)
     xlim([0 t_thrust(end)])
-    title('Thrust Curve')
+    thrust_title = strcat({'Thrust Curve of '},motor.name);
+    title(thrust_title)
     xlabel('Time (s)')
     ylabel('Thrust (N)')
     grid on
@@ -78,30 +85,52 @@ end
 
 %% Simulation
 
-t = 1:time_step:100;
-rho = @(x) 1.2250.*(288.15/(288.15-0.0065.*x)).^...
-    (1+9.80665.*0.0289644/(8.31432.*0.0065));
+% In order to change the time_step, go to the interpolation of the thrust
+% data. Specify your altitude goal, when you want the fins deployed, and
+% how much you want the fins to increase the intrinsic drag of the rocket
+t = 0:time_step:60;     % s
 altitude_target = 3048; % m
+t_fins_deployed = 7.3;    % s
+per_normal_drag = 1.544;    % *100%
 
-% inital liftoff conditions and vector initialization
-m = rocket.drymass.*ones(1,length(t)); g = 9.81.*ones(1,length(t)); % m/s^2
-F = zeros(1,length(t)); u = zeros(1,length(t));
-a = zeros(1,length(t)); h = zeros(1,length(t));
-dragloss = zeros(1,length(t)); gravityloss = zeros(1,length(t));
-currentmomentum = zeros(1,length(t)); mach1 = zeros(1,length(t));
-h(1) = 0; % rocket is at sea level
-u(1) = 0; % rocket is stationary
-m(1) = rocket.wetmass; % rocket is full of prop
+% Displays your input parameters
+disp(strcat(strcat(({'Fins deployed at '}),strcat(num2str(t_fins_deployed),'s')),...
+strcat({', creating '},...
+    strcat(num2str(per_normal_drag*100),'% more drag than just the rocket'))))
 
+% Atmospheric properties
+mach1const = 343; % m/s
+density = @(x) 1.2250.*(288.15/(288.15-0.0065.*x)).^...
+    (1+9.80665.*0.0289644/(8.31432.*0.0065));
+
+% Flight conditions
+m = rocket.drymass.*ones(1,length(t)); % kg
+g = 9.81.*ones(1,length(t));           % m/s^2
+mach1 = mach1const.*ones(1,length(t)); % m/s
+
+% Vector initialization for speed
+currentmomentum = zeros(1,length(t));
+F = zeros(1,length(t)); u = zeros(1,length(t)); dragloss = zeros(1,length(t));
+a = zeros(1,length(t)); h = zeros(1,length(t)); gravityloss = zeros(1,length(t));
+
+% Initial conditions
+h(1) = 0;                              % rocket is at sea level
+u(1) = 0;                              % rocket is stationary
+m(1) = rocket.wetmass;                 % rocket is full of prop
+
+% Flight simulation
 for i = 1:length(t)
     
-    if t(i) <= motor.burntime %if motor is on
+    if t(i) <= motor.burntime % if motor is on
         m(i+1) = m(i)-motor.mdotavg.*time_step;
     end
     
-    [~, mach1(i), ~, rho] = atmosisa(h(i)); % retrieves ambient conditions
+    % Drag calculation
+    rho = density(h(i));
     k = 0.5.*rocket.Cd.*rocket.S.*rho;
+    if (t(i)>t_fins_deployed) k = per_normal_drag*k; end % Drag fin multiplier
     dragloss(i) = k.*u(i).^2;
+    
     currentmomentum(i) = u(i).*m(i);
     gravityloss(i) = m(i).*g(i);
     
@@ -121,39 +150,43 @@ for i = 1:length(t)
         h(i+1) = trapz([0 time_step],[u(i) u(i+1)])+h(i);
     end
     
-    % silly bullshit to find the landing time
-    if t(i) > 10 && h(i) < 0
+    % silly bullshit to find the apogee or landing time
+    % u(i) < 0 is apogee
+    % h(i) < 0 is landing
+    if t(i) > 10 && u(i) < 0
         t_land(i) = t(i);
         t_land = unique(t_land(:));
         t_land = t_land(2);
     end
 end
 
-xlimit = [0 t_land];
+xlimit = [0 t_land];  % plots up to the specified limits
+
+%% Simulation Plots
+
+apogee_label_dim = [.4 .3 .6 .1];
+apogee_label_str = strcat(strcat(strcat({'Apogee = '},num2str(max(h)))),'m');
 
 if plot_h_u_a == 1
     figure
-    %subplot(3,1,1)
     hold on
-    plot(t,altitude_target.*ones(1,length(t)),'--')
-    %y1 = get(gca,'ylim');
-    %plot([t_powered(end),t_powered(end)],y1)
+    plot(t,altitude_target.*ones(1,length(t)),'--','LineWidth',linesize)
     plot(t,h,'LineWidth',linesize)
-    title('Altitude')
+    title(strcat(strcat({'Altitude ('},motor.name),')'))
     xlabel('Time (s)')
     ylabel('Height (m)')
     xlim(xlimit)
     grid on
-    legend('3048m','Burnout','Location','Southwest')
+    legend('3048m','Location','Southwest')
     % label apogee
-    dim = [.4 .4 .6 .2];
-    str = strcat({'Apogee = '},num2str(max(h)));
-    annotation('textbox',dim,'String',str,'FitBoxToText','on');
+    annotation('textbox',apogee_label_dim,'String',...
+        apogee_label_str,'FitBoxToText','on');
     
     figure
-    %subplot(3,1,2)
-    plot(t,mach1,'--',t,u,'LineWidth',linesize)
-    title('Velocity')
+    hold on
+    plot(t,mach1,'--','LineWidth',linesize)
+    plot(t,u,'LineWidth',linesize)
+    title(strcat(strcat({'Velocity ('},motor.name),')'))
     xlabel('Time (s)')
     ylabel('Velocity (m/s)')
     xlim(xlimit)
@@ -161,19 +194,48 @@ if plot_h_u_a == 1
     legend('Mach 1','Location','Southwest')
     
     figure
-    %subplot(3,1,3)
     plot(t(1:length(a)),a./g,'LineWidth',linesize)
-    title('Acceleration')
+    title(strcat(strcat({'Acceleration ('},motor.name),')'))
     xlabel('Time (s)')
-    ylabel('g (m/s^2)')
+    ylabel('g')
     xlim(xlimit)
     grid on
 end
 
+if plot_combined_hu == 1
+    figure
+    yyaxis right 
+    plot(t,h,t,altitude_target.*ones(1,length(t)),'LineWidth',linesize)
+    title(strcat(strcat({'Altitude and Velocity ('},motor.name),')'))
+    xlabel('Time (s)')
+    ylabel('Height (m)')
+    xlim(xlimit)
+    grid on    
+    yyaxis left
+    plot(t,u,t,mach1,'LineWidth',linesize)
+    ylabel('Velocity (m/s)')
+end
+
+if plot_h == 1
+    figure
+    hold on
+    plot(t,altitude_target.*ones(1,length(t)),'--','LineWidth',linesize)
+    plot(t,h,'LineWidth',linesize)
+    title(strcat(strcat({'Altitude ('},motor.name),')'))
+    xlabel('Time (s)')
+    ylabel('Height (m)')
+    xlim(xlimit)
+    grid on
+    legend('3048m','Location','Southwest')
+    % label apogee
+    annotation('textbox',apogee_label_dim,'String',...
+        apogee_label_str,'FitBoxToText','on');
+end
+
 if plot_forces == 1
     figure
-    plot(t,gravityloss,t_powered,T,t,dragloss,'LineWidth',linesize)
-    title('In-flight Forces')
+    plot(t,gravityloss,t_powered,T,t,dragloss,'LineWidth',linesize);
+    title('In-Flight Forces')
     xlabel('Time (s)')
     ylabel('Force (N)')
     xlim(xlimit)
@@ -183,29 +245,33 @@ end
 
 %% Drag fin characteristics
 
-rocket.burnouth = h(length(t_powered));
+rocket.burnout_h = h(length(t_powered));
 rocket.apogee = max(h);
 
-% Energy calculations
+% Energy calculations [J]
 e_net = rocket.drymass.*g(1).*rocket.apogee;
 e_want = rocket.drymass.*g(end).*altitude_target;
-e_loss = e_net - e_want;
-e_loss_perc = (e_net - e_want)/e_want; % J
+e_loss = e_net - e_want;               
+e_loss_perc = (e_net - e_want)/e_want; 
 disp('Percentage of energy need to lose to drag')
 disp(strcat(num2str(e_loss_perc.*100),'%'))
 
-% distance to altitude target from altitude at 10s
+% find index of distance to altitude target from altitude at fin deployment
 for i = 1:length(t)
-    if t(i) == 10
-        i10 = i;
+    if t(i) == t_fins_deployed
+        i_fins_deployed = i;
     end
 end
-d2at =  altitude_target - h(i10); % m
-D_df = e_loss./d2at;
-disp('Amount of drag needed if fins open after 10s')
-disp(strcat(num2str(D_df),'N'))
+d2at =  altitude_target - h(i_fins_deployed); % m
+D_df = e_loss./d2at;                          % N
 
-% small angle 
+disp(strcat(strcat('Amount of drag needed if fins open after ',...
+    num2str(t_fins_deployed)),'s'))
+disp(strcat(num2str(D_df),'N'))
+disp('Altitude Achieved')
+disp(strcat(num2str(rocket.apogee),'m'))
+
+% small angle
 theta_max_deg = 17.5; % degrees
 theta_max_rad = 0.3054326; % rad
 
