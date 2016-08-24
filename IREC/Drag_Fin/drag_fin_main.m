@@ -52,27 +52,25 @@ motor.name = motors{1};
 % Simulation Inputs
 time.step = 0.02;            % Choose time step, currently only <0.02 works
 time.end  = 400;             % Choose the duration of the simulation
-
 altitude.launch_site = 1219; % m
 altitude.target      = 3048; % m
-
-dragfin.deploy_t = 10;            % s, -1 will not deploy drag fins
-dragfin.extra_drag_percent = 1.2; % *100%
-
 rocket.launch_angle = 0;     % deg
 g = 9.81;                    % m/s^2
+dragfin.deploy_t = 10;            % s, -1 will not deploy drag fins
+dragfin.extra_drag_percent = 1.2; % *100%
 
 % -------------------------------------------------------------------------
 % Simulation
 % -------------------------------------------------------------------------
 
 [h,u,a,time,t,t_powered,mach1,rocket,gravityloss,T,dragloss,...
-    parachutedrag,droguedrag] = runSimulation(rocket,motor,parachute,...
-    drogue,altitude,dragfin,time,g);
+    parachutedrag,droguedrag,e,dragfin] = runSimulation(rocket,motor,...
+    parachute,drogue,altitude,dragfin,time,g);
 
 % -------------------------------------------------------------------------
 % Simulation Plots
 % -------------------------------------------------------------------------
+
 plot_options = [plot_landing,plot_thrust,plot_h_u_a,plot_combined_hu,...
     plot_h,plot_forces,plot_recovery_drag];
 getPlots(plot_options,time,t,t_powered,mach1,gravityloss,T,dragloss,...
@@ -81,40 +79,8 @@ clearvars plot_landing plot_thrust plot_h_u_a plot_combined_hu ...
     plot_h plot_forces plot_recovery_drag linesize
 
 % -------------------------------------------------------------------------
-% Drag fin energy characteristics
+% Results
 % -------------------------------------------------------------------------
-
-% Energy calculations [J]
-e.net = rocket.drymass.*g(1).*rocket.apogee;
-e.want = rocket.drymass.*g(end).*altitude.target;
-e.loss = e.net - e.want;
-e.loss_perc = (e.net - e.want)/e.want;
-
-% Find index of distance to altitude target from altitude at fin deployment
-% Setting t_fins_deployed below 0 will effectively stop them from deploying
-if dragfin.deploy_t > 0
-    tol = time.step; % this allows you to put in precise times for t_deploy
-    for i = 1:length(t)
-        if abs(t(i)-dragfin.deploy_t) < tol
-            dragfin.deploy_index = i;
-        end
-    end
-    dragfin.deploy_u = u(dragfin.deploy_index);
-    dragfin.deploy_h = h(dragfin.deploy_index);
-    dragfin.dist_to_apogee =  altitude.target - dragfin.deploy_h; % m
-    dragfin.extra_D_req = e.loss./dragfin.dist_to_apogee;                        % N
-    clearvars i tol
-    disp(strcat(strcat('Drag fins were deployed at ',...
-        num2str(dragfin.deploy_t),'s')))
-else
-    % If we deploy fins at 3113m
-    default_deploy_h = 3113; % m
-    dragfin.dist_to_apogee = altitude.target - default_deploy_h; % m
-    dragfin.extra_D_req = e.loss./dragfin.dist_to_apogee;
-    disp(strcat(strcat(...
-        'Drag fins were not deployed, but if we did deploy at',...
-        num2str(default_deploy_h),'m')))
-end
 
 if altitude.target-rocket.apogee<0; 
     disp('Warning: Below target altitude'); 
